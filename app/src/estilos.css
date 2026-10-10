@@ -430,9 +430,22 @@ h1, h2, h3, h4 { font-weight: 700; }
 .opcao-texto strong { display: block; font-size: 17px; }
 .opcao-texto small { color: var(--texto-2); }
 .batida-mao { display: flex; flex-direction: column; gap: 10px; }
-.vagas { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px 4px; justify-items: center; padding: 4px 0; }
-.vaga .vaga-carta { animation: cair 0.32s cubic-bezier(0.2, 1.3, 0.4, 1) both; }
+.vaga-carta { animation: cair 0.32s cubic-bezier(0.2, 1.3, 0.4, 1) both; }
 @keyframes cair { from { transform: translateY(-16px) scale(0.8); opacity: 0; } }
+.grupos { display: flex; flex-direction: column; gap: 8px; }
+.grupo { padding: 8px 10px 10px; border-radius: 14px; background: var(--painel-2); border: 1px solid var(--borda); transition: border-color 0.25s, background 0.25s; }
+.grupo-ok { border-color: rgba(74, 222, 128, 0.55); background: rgba(74, 222, 128, 0.07); }
+.grupo-erro { border-color: rgba(251, 113, 133, 0.6); background: rgba(251, 113, 133, 0.07); animation: tremer 0.35s ease; }
+@keyframes tremer { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+.grupo-topo { display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin-bottom: 7px; }
+.grupo-nome { font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ouro); }
+.grupo-status { color: var(--texto-3); display: inline-flex; align-items: center; gap: 4px; font-weight: 600; }
+.grupo-ok .grupo-status { color: #86efac; }
+.grupo-erro .grupo-status { color: #fda4af; }
+.grupo-cartas { display: flex; gap: 6px; }
+.vaga-botao { border-radius: 6px; }
+.vaga-botao.alvo .carta-vazia { border: 2px solid var(--ouro); box-shadow: 0 0 0 3px rgba(242, 193, 78, 0.18), 0 0 14px rgba(242, 193, 78, 0.35); animation: pulsar 1.4s ease-in-out infinite; }
+.aviso-arrumacao { display: flex; align-items: center; gap: 8px; margin: 0; padding: 10px 12px; border-radius: 12px; background: rgba(242, 193, 78, 0.1); border: 1px solid rgba(242, 193, 78, 0.35); font-size: 13px; color: var(--texto); }
 .batida-mao-info { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--texto-2); min-height: 28px; }
 .batida-mao-info b { color: var(--ouro); }
 .sem-premio { height: auto; min-height: 46px; padding: 10px 14px; font-size: 14px; }

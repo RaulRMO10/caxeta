@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { arranjosPossiveis } from './arranjo';
+import { arranjosPossiveis, formaJogo } from './arranjo';
 import { carta, cartas, contextoDaVira, JOKER, nomeCarta } from './cartas';
 import { DOBRAS, TRINCAS } from './jogos';
 import { calcularBatida, CONFIG_PADRAO, Roleta, roletaTemCoringa, sortearRoleta } from './premios';
@@ -177,5 +177,31 @@ describe('roleta sorteada depois da vira', () => {
     expect(p!.rodada.roleta.sorteio).toBe(0);
     p = reduzir(p, { tipo: 'vira', carta: carta('K♥'), sortear: false });
     expect(p!.rodada.roleta.sorteio).toBe(0);
+  });
+});
+
+describe('mão marcada por jogo', () => {
+  const g = (...txts: string[]) => txts.map(cartas);
+  it('reconhece cada jogo marcado', () => {
+    expect(formaJogo(cartas('4♥ 5♥ 6♥'), ctx('2♣'))?.seq).toBe(true);
+    expect(formaJogo(cartas('9♠ 9♥ 9♦'), ctx('2♣'))?.seq).toBe(false);
+    expect(formaJogo(cartas('9♠ 9♠ 9♥ 9♦'), ctx('2♣'))?.tam).toBe(4);
+    expect(formaJogo(cartas('4♥ 5♠ 6♥'), ctx('2♣'))).toBeNull();
+    // vira 6♠: 7♣ é coringa e completa a sequência
+    expect(formaJogo(cartas('A♥ 2♥ 7♣'), ctx('6♠'))).not.toBeNull();
+  });
+  it('usa o jeito marcado quando ele fecha', () => {
+    const r = calcularBatida(cartas('A♥ 2♥ 3♥ 5♠ 5♥ 5♣ 9♦ 10♦ J♦'), ctx('7♣'), semRoleta, CONFIG_PADRAO, 4, g('A♥ 2♥ 3♥', '5♠ 5♥ 5♣', '9♦ 10♦ J♦'))!;
+    expect(r.arrumacao).toBe('marcada');
+  });
+  it('avisa quando o jeito marcado não fecha', () => {
+    const r = calcularBatida(cartas('A♥ 2♥ 5♠ 3♥ 5♥ 5♣ 9♦ 10♦ J♦'), ctx('7♣'), semRoleta, CONFIG_PADRAO, 4, g('A♥ 2♥ 5♠', '3♥ 5♥ 5♣', '9♦ 10♦ J♦'))!;
+    expect(r.arrumacao).toBe('corrigida');
+  });
+  it('troca para um jeito que vale mais', () => {
+    // marcadas como 3 trincas de iguais (sem prêmio), mas as mesmas cartas fazem a Bandeira
+    const r = calcularBatida(cartas('4♥ 4♠ 4♦ 5♥ 5♠ 5♦ 6♥ 6♠ 6♦'), ctx('J♣'), semRoleta, CONFIG_PADRAO, 4, g('4♥ 4♠ 4♦', '5♥ 5♠ 5♦', '6♥ 6♠ 6♦'))!;
+    expect(r.arrumacao).toBe('melhor');
+    expect(nomes(r)).toContain('Bandeira:120');
   });
 });

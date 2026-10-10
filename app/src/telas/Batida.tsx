@@ -5,11 +5,21 @@ import { Folha } from '../componentes/Folha';
 import { Icone } from '../componentes/Icone';
 import { JogosMontados } from '../componentes/JogosMontados';
 import { SeletorCarta } from '../componentes/SeletorCarta';
+import { formaJogo } from '../motor/arranjo';
 import { Carta as TipoCarta, contextoDaVira, copiasDisponiveis, JOKER } from '../motor/cartas';
+import { Jogo } from '../motor/jogos';
 import { calcularBatida, NIVEIS } from '../motor/premios';
 import { Acao, jogador, Partida, vivos } from '../estado/partida';
 
 type Passo = 'quem' | 'tipo' | 'vira' | 'mao' | 'resultado';
+
+// As vagas da mão separadas em jogos, do jeito que a pessoa baixa na mesa.
+const GRUPOS: Record<9 | 10, { nome: string; ini: number; fim: number }[]> = {
+  9: [{ nome: 'Jogo 1', ini: 0, fim: 3 }, { nome: 'Jogo 2', ini: 3, fim: 6 }, { nome: 'Jogo 3', ini: 6, fim: 9 }],
+  10: [{ nome: 'Jogo 1', ini: 0, fim: 3 }, { nome: 'Jogo 2', ini: 3, fim: 6 }, { nome: 'Quadra', ini: 6, fim: 10 }],
+};
+
+const nomeDoJogo = (j: Jogo) => (j.seq ? (j.tam === 4 ? 'Sequência de 4' : 'Sequência') : (j.tam === 4 ? 'Quadra de iguais' : 'Iguais'));
 
 export function FluxoBatida({ aberta, aoFechar, p, despachar }: {
   aberta: boolean;
@@ -20,32 +30,47 @@ export function FluxoBatida({ aberta, aoFechar, p, despachar }: {
   const [passo, setPasso] = useState<Passo>('quem');
   const [vencedorId, setVencedorId] = useState<string | null>(null);
   const [tam, setTam] = useState<9 | 10>(9);
-  const [mao, setMao] = useState<TipoCarta[]>([]);
+  const [vagas, setVagas] = useState<(TipoCarta | null)[]>(Array(9).fill(null));
+  const [alvo, setAlvo] = useState(0); // vaga que recebe a próxima carta
 
+  const comecarMao = (t: 9 | 10) => { setTam(t); setVagas(Array(t).fill(null)); setAlvo(0); };
   useEffect(() => {
-    if (aberta) { setPasso('quem'); setVencedorId(null); setMao([]); }
+    if (aberta) { setPasso('quem'); setVencedorId(null); comecarMao(9); }
   }, [aberta]);
 
   const vira = p.rodada.vira;
   const ctx = vira !== null ? contextoDaVira(vira) : null;
   const n = vivos(p).length;
-  const resultado = useMemo(
-    () => (vira !== null && mao.length === tam ? calcularBatida(mao, contextoDaVira(vira), p.rodada.roleta, p.config, n) : null),
-    [mao, tam, vira, p.rodada.roleta, p.config, n],
-  );
+  const mao = vagas.filter((c): c is TipoCarta => c !== null);
+  const cheia = mao.length === tam;
+  const resultado = useMemo(() => {
+    if (vira === null || vagas.some(c => c === null)) return null;
+    const grupos = GRUPOS[tam].map(g => vagas.slice(g.ini, g.fim) as TipoCarta[]);
+    return calcularBatida(grupos.flat(), contextoDaVira(vira), p.rodada.roleta, p.config, n, grupos);
+  }, [vagas, tam, vira, p.rodada.roleta, p.config, n]);
 
   // mão completa: mostra a conta
   useEffect(() => {
-    if (passo === 'mao' && mao.length === tam) {
-      const t = setTimeout(() => setPasso('resultado'), 350);
+    if (passo === 'mao' && cheia) {
+      const t = setTimeout(() => setPasso('resultado'), 450);
       return () => clearTimeout(t);
     }
-  }, [mao, tam, passo]);
+  }, [cheia, passo]);
 
   const vencedor = vencedorId ? jogador(p, vencedorId) : null;
   const quantas = (c: TipoCarta) => mao.filter(x => x === c).length;
-  const restantes = (c: TipoCarta) => (mao.length >= tam ? 0 : copiasDisponiveis(c, vira) - quantas(c));
-  const tirar = (i: number) => setMao(mao.filter((_, k) => k !== i));
+  const restantes = (c: TipoCarta) => (cheia ? 0 : copiasDisponiveis(c, vira) - quantas(c));
+  const colocar = (c: TipoCarta) => {
+    const novas = [...vagas];
+    const i = novas[alvo] === null ? alvo : novas.indexOf(null);
+    if (i < 0) return;
+    novas[i] = c;
+    setVagas(novas);
+    // próxima vaga vazia depois desta (ou a primeira que sobrou)
+    const depois = novas.findIndex((x, k) => k > i && x === null);
+    setAlvo(depois >= 0 ? depois : novas.indexOf(null));
+  };
+  const tirar = (i: number) => { const novas = [...vagas]; novas[i] = null; setVagas(novas); setAlvo(i); };
   const semPremio = () => {
     const base = tam === 10 ? p.config.base10 : p.config.base9;
     despachar({ tipo: 'bateu', vencedorId: vencedorId!, tam, mao: null, linhas: [{ rotulo: `Batida de ${tam}`, pontos: base }], total: base, ganhaPartida: false });
@@ -94,7 +119,7 @@ export function FluxoBatida({ aberta, aoFechar, p, despachar }: {
           <div className="batida-tipo">
             <div className="batida-quem"><Avatar nome={vencedor.nome} cor={vencedor.cor} tam={44} /> <b>{vencedor.nome}</b> bateu</div>
             {([9, 10] as const).map(t => (
-              <button key={t} className="opcao-batida" onClick={() => { setTam(t); setMao([]); setPasso(vira === null ? 'vira' : 'mao'); }}>
+              <button key={t} className="opcao-batida" onClick={() => { comecarMao(t); setPasso(vira === null ? 'vira' : 'mao'); }}>
                 <span className="opcao-numero">{t}</span>
                 <span className="opcao-texto">
                   <strong>Batida de {t}</strong>
@@ -119,21 +144,42 @@ export function FluxoBatida({ aberta, aoFechar, p, despachar }: {
 
         {passo === 'mao' && (
           <div className="batida-mao">
-            <div className={`vagas vagas-${tam}`}>
-              {Array.from({ length: tam }, (_, i) => (
-                <div key={i} className="vaga">
-                  {mao[i] !== undefined
-                    ? <Carta c={mao[i]} tam={54} coringa={mao[i] !== JOKER && ctx?.ehCoringa(mao[i])} onClick={() => tirar(i)} className="vaga-carta" />
-                    : <Carta c={null} tam={54} />}
-                </div>
-              ))}
+            <div className="grupos">
+              {GRUPOS[tam].map(g => {
+                const doGrupo = vagas.slice(g.ini, g.fim);
+                const completo = doGrupo.every(c => c !== null);
+                const jogo = completo && ctx ? formaJogo(doGrupo as TipoCarta[], ctx) : null;
+                const estado = !completo ? '' : jogo ? 'grupo-ok' : 'grupo-erro';
+                return (
+                  <div key={g.nome} className={`grupo ${estado}`}>
+                    <div className="grupo-topo">
+                      <span className="grupo-nome">{g.nome}</span>
+                      <span className="grupo-status">
+                        {!completo ? `${doGrupo.filter(c => c !== null).length} de ${g.fim - g.ini}`
+                          : jogo ? <><Icone nome="check" tam={14} /> {nomeDoJogo(jogo)}</> : 'não forma jogo'}
+                      </span>
+                    </div>
+                    <div className="grupo-cartas">
+                      {doGrupo.map((c, k) => {
+                        const i = g.ini + k;
+                        return c !== null
+                          ? <Carta key={i} c={c} tam={50} coringa={c !== JOKER && ctx?.ehCoringa(c)} onClick={() => tirar(i)} className="vaga-carta" />
+                          : (
+                            <button key={i} className={`vaga-botao ${alvo === i ? 'alvo' : ''}`} onClick={() => setAlvo(i)} aria-label={`Vaga ${k + 1} do ${g.nome}`}>
+                              <Carta c={null} tam={50} />
+                            </button>
+                          );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
             <div className="batida-mao-info">
               <span><b>{mao.length}</b> de {tam} cartas · toque numa carta para tirar</span>
-              {mao.length > 0 && <button className="botao-texto" onClick={() => setMao([])}>limpar</button>}
+              {mao.length > 0 && <button className="botao-texto" onClick={() => comecarMao(tam)}>limpar</button>}
             </div>
-            <SeletorCarta comJoker restantes={restantes} quantas={quantas} ehCoringa={ctx?.ehCoringa}
-              aoEscolher={c => setMao(m => [...m, c])} />
+            <SeletorCarta comJoker restantes={restantes} quantas={quantas} ehCoringa={ctx?.ehCoringa} aoEscolher={colocar} />
             <button className="botao botao-fantasma botao-cheio sem-premio" onClick={semPremio}>
               Sem prêmio: registrar só a batida (+{tam === 10 ? p.config.base10 : p.config.base9})
             </button>
@@ -143,6 +189,14 @@ export function FluxoBatida({ aberta, aoFechar, p, despachar }: {
         {passo === 'resultado' && ctx && (
           resultado ? (
             <div className="batida-resultado">
+              {resultado.arrumacao !== 'marcada' && (
+                <p className="aviso-arrumacao">
+                  <Icone nome="info" tam={16} />
+                  {resultado.arrumacao === 'melhor'
+                    ? 'Achei um jeito de arrumar essas cartas que vale mais:'
+                    : 'Do jeito que foi marcado algum jogo não fecha, mas as cartas fecham assim:'}
+                </p>
+              )}
               <JogosMontados r={resultado} ctx={ctx} />
               <ul className="conta">
                 {resultado.linhas.map((l, i) => (

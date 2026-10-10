@@ -70,7 +70,7 @@ export function arranjosPossiveis(mao: Carta[], ctx: Contexto): Arranjo[] {
     const k = chave(escolhidos);
     if (achados.has(k)) return;
     const subs = substitutosNecessarios(escolhidos, m, ctx);
-    if (subs >= 0) achados.set(k, { jogos: [...escolhidos].sort((a, b) => b.tam - a.tam), substitutos: subs });
+    if (subs >= 0) achados.set(k, { jogos: [...escolhidos].sort((a, b) => a.tam - b.tam), substitutos: subs });
   };
 
   // vagasAbertas: vagas dos jogos escolhidos que ainda vão precisar de coringa/Joker
@@ -113,6 +113,30 @@ export function arranjosPossiveis(mao: Carta[], ctx: Contexto): Arranjo[] {
 
   rec(tam === 9 ? 3 : 2, tam === 9 ? 0 : 1, 0);
   return [...achados.values()];
+}
+
+// Que jogo essas cartas formam sozinhas (3 = trinca, 4 = dobra)? O que usa menos coringa, ou null.
+export function formaJogo(cartas: Carta[], ctx: Contexto): Jogo | null {
+  if (cartas.length !== 3 && cartas.length !== 4) return null;
+  const m = separar(cartas, ctx);
+  let melhor: Jogo | null = null, menor = Infinity;
+  for (const j of cartas.length === 3 ? TRINCAS : DOBRAS) {
+    const d = demanda([j]);
+    let cabe = true;
+    for (let t = 0; t < NT && cabe; t++) if (m.naturais[t] > (d.get(t) ?? 0)) cabe = false;
+    if (!cabe) continue;
+    const subs = substitutosNecessarios([j], m, ctx);
+    if (subs >= 0 && subs < menor) { menor = subs; melhor = j; }
+  }
+  return melhor;
+}
+
+// Arranjo com os jogos do jeito que foram marcados (null se algum não forma jogo).
+export function arranjoMarcado(grupos: Carta[][], ctx: Contexto): Arranjo | null {
+  const jogos = grupos.map(g => formaJogo(g, ctx));
+  if (jogos.some(j => j === null)) return null;
+  const subs = substitutosNecessarios(jogos as Jogo[], separar(grupos.flat(), ctx), ctx);
+  return subs < 0 ? null : { jogos: jogos as Jogo[], substitutos: subs };
 }
 
 // Distribui as cartas da mão nas vagas do arranjo (cartas comuns primeiro, nos jogos de

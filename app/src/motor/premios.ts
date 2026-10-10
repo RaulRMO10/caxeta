@@ -1,4 +1,4 @@
-import { arranjosPossiveis, Arranjo, preencher, Vaga } from './arranjo';
+import { arranjoMarcado, arranjosPossiveis, Arranjo, preencher, Vaga } from './arranjo';
 import { Carta, Contexto, valorDe } from './cartas';
 import { DOBRAS, Jogo, JOGOS, TRINCAS } from './jogos';
 
@@ -179,6 +179,9 @@ export interface ResultadoBatida {
   ganhaPartida: boolean;
   premios: PremioId[];
   roletaFeita: number[]; // índices dos jogos do arranjo que são da roleta
+  // 'marcada' = do jeito que foi marcado; 'melhor' = o app achou um jeito que vale mais;
+  // 'corrigida' = do jeito marcado algum jogo não fechava
+  arrumacao: 'marcada' | 'melhor' | 'corrigida';
 }
 
 function avaliar(arr: Arranjo, mao: Carta[], ctx: Contexto, roleta: Roleta, cfg: ConfigPontos, jogadores: number): ResultadoBatida {
@@ -214,19 +217,23 @@ function avaliar(arr: Arranjo, mao: Carta[], ctx: Contexto, roleta: Roleta, cfg:
   });
   const total = linhas.reduce((s, l) => s + l.pontos, 0);
   const vagas = preencher(arr, mao, ctx, roletaFeita.map(i => arr.jogos[i].id));
-  return { tam, arranjo: arr, vagas, linhas, total, ganhaPartida: ganha, premios, roletaFeita };
+  return { tam, arranjo: arr, vagas, linhas, total, ganhaPartida: ganha, premios, roletaFeita, arrumacao: 'marcada' };
 }
 
+const vale = (r: ResultadoBatida) => (r.ganhaPartida ? Infinity : r.total);
+
 // Melhor forma de arrumar a mão do vencedor (a que dá mais pontos). null se não fecha batida.
-export function calcularBatida(mao: Carta[], ctx: Contexto, roleta: Roleta, cfg: ConfigPontos, jogadores: number): ResultadoBatida | null {
+// Se a mão veio marcada em jogos (grupos), usa esse jeito, a não ser que outro valha mais.
+export function calcularBatida(mao: Carta[], ctx: Contexto, roleta: Roleta, cfg: ConfigPontos, jogadores: number, grupos?: Carta[][]): ResultadoBatida | null {
   let melhor: ResultadoBatida | null = null;
   for (const arr of arranjosPossiveis(mao, ctx)) {
     const r = avaliar(arr, mao, ctx, roleta, cfg, jogadores);
-    if (!melhor
-      || Number(r.ganhaPartida) - Number(melhor.ganhaPartida) > 0
-      || (r.ganhaPartida === melhor.ganhaPartida && (r.total > melhor.total
-        || (r.total === melhor.total && r.arranjo.substitutos < melhor.arranjo.substitutos)))) melhor = r;
+    if (!melhor || vale(r) > vale(melhor) || (vale(r) === vale(melhor) && r.arranjo.substitutos < melhor.arranjo.substitutos)) melhor = r;
   }
-  return melhor;
+  if (!melhor || !grupos) return melhor;
+  const marcado = arranjoMarcado(grupos, ctx);
+  if (!marcado) return { ...melhor, arrumacao: 'corrigida' };
+  const r = avaliar(marcado, mao, ctx, roleta, cfg, jogadores);
+  return vale(r) >= vale(melhor) ? r : { ...melhor, arrumacao: 'melhor' };
 }
 
