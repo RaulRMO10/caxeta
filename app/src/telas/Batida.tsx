@@ -49,13 +49,13 @@ export function FluxoBatida({ aberta, aoFechar, p, despachar }: {
     return calcularBatida(grupos.flat(), contextoDaVira(vira), p.rodada.roleta, p.config, n, grupos);
   }, [vagas, tam, vira, p.rodada.roleta, p.config, n]);
 
-  // mão completa: mostra a conta
+  // quando a última carta entra, mostra a conta sozinho (voltar para corrigir não dispara de novo)
+  const [completou, setCompletou] = useState(0);
   useEffect(() => {
-    if (passo === 'mao' && cheia) {
-      const t = setTimeout(() => setPasso('resultado'), 450);
-      return () => clearTimeout(t);
-    }
-  }, [cheia, passo]);
+    if (!completou) return;
+    const t = setTimeout(() => setPasso('resultado'), 450);
+    return () => clearTimeout(t);
+  }, [completou]);
 
   const vencedor = vencedorId ? jogador(p, vencedorId) : null;
   const quantas = (c: TipoCarta) => mao.filter(x => x === c).length;
@@ -69,6 +69,7 @@ export function FluxoBatida({ aberta, aoFechar, p, despachar }: {
     // próxima vaga vazia depois desta (ou a primeira que sobrou)
     const depois = novas.findIndex((x, k) => k > i && x === null);
     setAlvo(depois >= 0 ? depois : novas.indexOf(null));
+    if (novas.every(x => x !== null)) setCompletou(n => n + 1);
   };
   const tirar = (i: number) => { const novas = [...vagas]; novas[i] = null; setVagas(novas); setAlvo(i); };
   const semPremio = () => {
@@ -179,6 +180,11 @@ export function FluxoBatida({ aberta, aoFechar, p, despachar }: {
               <span><b>{mao.length}</b> de {tam} cartas · toque numa carta para tirar</span>
               {mao.length > 0 && <button className="botao-texto" onClick={() => comecarMao(tam)}>limpar</button>}
             </div>
+            {cheia && (
+              <button className="botao botao-ouro botao-cheio" onClick={() => setPasso('resultado')}>
+                <Icone nome="check" tam={18} /> Conferir
+              </button>
+            )}
             <SeletorCarta comJoker restantes={restantes} quantas={quantas} ehCoringa={ctx?.ehCoringa} aoEscolher={colocar} />
             <button className="botao botao-fantasma botao-cheio sem-premio" onClick={semPremio}>
               Sem prêmio: registrar só a batida (+{tam === 10 ? p.config.base10 : p.config.base9})
