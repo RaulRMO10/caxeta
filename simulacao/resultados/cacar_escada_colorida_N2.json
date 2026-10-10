@@ -1,0 +1,77 @@
+{
+ "olhadas": 60000,
+ "porGap": [
+  {
+   "n": 10776,
+   "segVit": 5117,
+   "segBase": 5404,
+   "chVit": 2393,
+   "chBase": 3015,
+   "chSubs": 4055,
+   "chSubsHist": [
+    105,
+    876,
+    1076,
+    336
+   ],
+   "chTurnos": 40238,
+   "segTurnos": 60484
+  },
+  {
+   "n": 26908,
+   "segVit": 12987,
+   "segBase": 13660,
+   "chVit": 4926,
+   "chBase": 6254,
+   "chSubs": 8204,
+   "chSubsHist": [
+    251,
+    1814,
+    2231,
+    630
+   ],
+   "chTurnos": 89657,
+   "segTurnos": 146735
+  },
+  {
+   "n": 17362,
+   "segVit": 8918,
+   "segBase": 9348,
+   "chVit": 2730,
+   "chBase": 3451,
+   "chSubs": 4576,
+   "chSubsHist": [
+    139,
+    1005,
+    1202,
+    384
+   ],
+   "chTurnos": 52264,
+   "segTurnos": 93418
+  },
+  {
+   "n": 4282,
+   "segVit": 2419,
+   "segBase": 2547,
+   "chVit": 605,
+   "chBase": 762,
+   "chSubs": 1052,
+   "chSubsHist": [
+    26,
+    210,
+    271,
+    98
+   ],
+   "chTurnos": 12134,
+   "segTurnos": 22060
+  }
+ ],
+ "config": {
+  "tipo": "cacar",
+  "N": 2,
+  "familia": "escada_colorida",
+  "maxGap": 3,
+  "total": 60000,
+  "segundos": 97.013
+ }
+}

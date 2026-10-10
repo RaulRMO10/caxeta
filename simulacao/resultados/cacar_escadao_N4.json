@@ -1,0 +1,77 @@
+{
+ "olhadas": 200000,
+ "porGap": [
+  {
+   "n": 918,
+   "segVit": 170,
+   "segBase": 182,
+   "chVit": 21,
+   "chBase": 22,
+   "chSubs": 37,
+   "chSubsHist": [
+    0,
+    9,
+    8,
+    4
+   ],
+   "chTurnos": 391,
+   "segTurnos": 2505
+  },
+  {
+   "n": 13089,
+   "segVit": 2672,
+   "segBase": 2814,
+   "chVit": 142,
+   "chBase": 157,
+   "chSubs": 322,
+   "chSubsHist": [
+    2,
+    21,
+    65,
+    54
+   ],
+   "chTurnos": 3045,
+   "segTurnos": 36938
+  },
+  {
+   "n": 51607,
+   "segVit": 11376,
+   "segBase": 11947,
+   "chVit": 238,
+   "chBase": 267,
+   "chSubs": 541,
+   "chSubsHist": [
+    5,
+    36,
+    99,
+    98
+   ],
+   "chTurnos": 5846,
+   "segTurnos": 145916
+  },
+  {
+   "n": 78513,
+   "segVit": 19270,
+   "segBase": 20165,
+   "chVit": 150,
+   "chBase": 179,
+   "chSubs": 356,
+   "chSubsHist": [
+    3,
+    14,
+    66,
+    67
+   ],
+   "chTurnos": 4156,
+   "segTurnos": 225950
+  }
+ ],
+ "config": {
+  "tipo": "cacar",
+  "N": 4,
+  "familia": "escadao",
+  "maxGap": 3,
+  "total": 200000,
+  "segundos": 170.483
+ }
+}

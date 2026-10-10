@@ -1,0 +1,77 @@
+{
+ "olhadas": 40000,
+ "porGap": [
+  {
+   "n": 8426,
+   "segVit": 1899,
+   "segBase": 1993,
+   "chVit": 983,
+   "chBase": 1043,
+   "chSubs": 1730,
+   "chSubsHist": [
+    68,
+    324,
+    394,
+    197
+   ],
+   "chTurnos": 14688,
+   "segTurnos": 23675
+  },
+  {
+   "n": 19307,
+   "segVit": 4556,
+   "segBase": 4770,
+   "chVit": 1337,
+   "chBase": 1435,
+   "chSubs": 2402,
+   "chSubsHist": [
+    64,
+    446,
+    559,
+    268
+   ],
+   "chTurnos": 23239,
+   "segTurnos": 54897
+  },
+  {
+   "n": 10698,
+   "segVit": 2888,
+   "segBase": 3011,
+   "chVit": 494,
+   "chBase": 521,
+   "chSubs": 931,
+   "chSubsHist": [
+    18,
+    160,
+    202,
+    114
+   ],
+   "chTurnos": 9674,
+   "segTurnos": 30607
+  },
+  {
+   "n": 1495,
+   "segVit": 574,
+   "segBase": 614,
+   "chVit": 47,
+   "chBase": 48,
+   "chSubs": 90,
+   "chSubsHist": [
+    0,
+    13,
+    25,
+    9
+   ],
+   "chTurnos": 998,
+   "segTurnos": 4972
+  }
+ ],
+ "config": {
+  "tipo": "cacar",
+  "N": 4,
+  "familia": "cor_unica",
+  "maxGap": 3,
+  "total": 40000,
+  "segundos": 129.49
+ }
+}

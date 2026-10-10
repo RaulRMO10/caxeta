@@ -1,0 +1,184 @@
+==============================
+        REGRAS DA CAXETA
+==============================
+
+1. MATERIAL E JOGADORES
+------------------------------
+- 2 baralhos com os Jokers: 108 cartas (52 + 52 + 4 Jokers).
+- De 2 a 8 jogadores.
+
+
+2. EMBARALHAR, CORTAR E DAR AS CARTAS
+------------------------------
+- Joga-se no sentido ANTI-HORÁRIO (o jogo vai para a direita).
+- Quem embaralha entrega o baralho para o jogador da ESQUERDA cortar.
+- Depois do corte, quem embaralhou dá as cartas de 3 em 3, seguindo
+  a sequência: 3 para o primeiro, 3 para o segundo, e assim vai. Dá a
+  volta na mesa 3 vezes, até cada jogador ter 9 cartas.
+- O jogador da DIREITA de quem embaralhou começa a rodada.
+- Na próxima rodada, todo mundo anda uma casa:
+    - quem embaralhou passa a cortar;
+    - quem começou passa a embaralhar;
+    - o seguinte dele começa.
+
+
+3. A VIRA, OS CORINGAS E OS JOKERS
+------------------------------
+- Depois de dar as cartas, vira-se uma carta do monte: a VIRA.
+- A vira nunca pode ser um Joker. Se sair um, vira-se outra carta.
+
+CORINGAS (valem qualquer carta). São 5 por rodada:
+  a) As cartas de valor SEGUINTE ao da vira, da MESMA COR da vira
+     (as 2 pintas dessa cor x 2 baralhos = 4 cartas).
+  b) O ESPELHO: a outra carta igual à vira (mesmo valor e mesma pinta,
+     do outro baralho).
+
+- Para achar o coringa, os valores dão a volta: depois do K vem o Ás.
+- Exemplos:
+    Vira 6♠ (preto)     -> coringas: 7♠ 7♠ 7♣ 7♣ + o outro 6♠
+    Vira 6♦ (vermelho)  -> coringas: 7♥ 7♥ 7♦ 7♦ + o outro 6♦
+    Vira K♥ (vermelho)  -> coringas: A♥ A♥ A♦ A♦ + o outro K♥
+- Não tem limite de coringas por jogo: o limite são as cartas que você tem.
+- Pode descartar coringa (mas aí é vacilo de quem descartou).
+
+JOKERS (os 4 do baralho)
+- O Joker NÃO vale tudo. Ele vale a carta do coringa: o valor seguinte
+  ao da vira, na cor da vira, em qualquer uma das duas pintas dessa cor.
+- A cor do próprio Joker não importa.
+- Exemplo: vira 7♥ (vermelho) -> cada Joker vale um 8♥ ou um 8♦.
+    Joker + Joker + 8♠          -> trinca (8♥ 8♦ 8♠)
+    Joker + Joker + Joker + 8♠  -> dobra  (8♥ 8♦ 8♥ 8♠)
+    6♦ 7♦ Joker                 -> sequência (6♦ 7♦ 8♦)
+    4♠ 5♠ Joker                 -> NÃO vale (o Joker não vira 6♠)
+    Joker + Joker + Joker       -> NÃO vale (só tem 2 pintas vermelhas,
+                                   repete pinta)
+
+
+4. OS JOGOS
+------------------------------
+Jogo de 3 (TRINCA). Pode ser:
+  - Sequência: 3 cartas seguidas da mesma pinta.
+      Ex.: 4♥ 5♥ 6♥
+  - Iguais: 3 cartas do mesmo valor, cada uma de uma pinta diferente.
+      Ex.: 9♠ 9♥ 9♦
+
+Jogo de 4 (DOBRA). Só existe na batida de 10, e só pode ter UMA dobra.
+Pode ser:
+  - Sequência: 4 cartas seguidas da mesma pinta.
+      Ex.: 4♥ 5♥ 6♥ 7♥
+  - Iguais: 3 cartas de pintas diferentes + 1 repetindo a pinta de uma
+    delas (fica dois iguais e dois diferentes).
+      Ex.: 9♠ 9♠ 9♥ 9♦
+  - 4 pintas todas diferentes NÃO vale.
+      Ex.: 9♠ 9♥ 9♦ 9♣ -> não vale
+
+O Ás nas sequências:
+  - Pode ser a carta mais baixa: A-2-3 vale.
+  - Pode ser a carta mais alta: Q-K-A vale.
+  - Não dá a volta: K-A-2 NÃO vale.
+
+
+5. A JOGADA
+------------------------------
+- Na sua vez: compra uma carta e descarta uma.
+- Pode comprar do monte ou do lixo. Do lixo, só a carta de cima.
+- Primeira jogada da rodada: quem começa compra e, se a carta não servir,
+  descarta e pode comprar outra. Depois tem que descartar de novo.
+- Se o monte acabar, embaralha o lixo e ele vira o monte de novo.
+
+
+6. BATER
+------------------------------
+- BATER DE 9: 3 trincas (3 + 3 + 3) e descarta a 10ª carta.
+- BATER DE 10: 2 trincas + 1 dobra (3 + 3 + 4). Desce as 10 cartas,
+  sem descartar.
+- Bater com ou sem coringa vale a mesma coisa.
+- Só quem bate marca. Quem não bateu perde tudo o que estava montando,
+  mesmo que tenha jogos prontos na mão.
+- BATER ERRADO: quem bate errado fica queimado e, até o fim da rodada,
+  não pode mais comprar do lixo, só do monte.
+
+BATER ATRAVESSADO
+- Se alguém descarta a carta que falta para você bater, você pode bater
+  com ela mesmo NÃO sendo a sua vez. Isso é bater atravessado.
+- A preferência é do jogador da vez: se ele bater com essa carta, a
+  batida é dele.
+- Se o jogador da vez fizer menção de comprar do monte (sinal de que não
+  quer a carta), você pode bater atravessado.
+- Se o jogador da vez pegar a carta e não bater, você também pode bater
+  atravessado, porque ele não vai bater com ela.
+- [A DEFINIR: se ele já pegou a carta, ela sai da mão dele e vem para
+  você?]
+- [A DEFINIR: se duas pessoas querem bater atravessado com a mesma carta,
+  quem tem a preferência?]
+- [A DEFINIR: até quando dá para bater atravessado? Até cair outra carta
+  em cima no lixo?]
+
+
+7. PONTOS E FIM DO JOGO
+------------------------------
+O meio começa com 100 pontos. O jogo tem duas fases:
+
+SUBIDA (enquanto tem ponto no meio)
+- Quem bate puxa do meio o valor da batida:
+    - Bater de 9: 10 pontos.
+    - Bater de 10: 20 pontos.
+    - Mais os prêmios (ver parte 8).
+- Se a batida vale mais do que sobrou no meio, puxa o que sobrou e o
+  resto já conta como descida (ver abaixo).
+
+DESCIDA (quando acaba o meio)
+- Quando o meio acaba, quem está sem ponto sai do jogo na hora.
+- Quem bate não perde ponto: tira o valor da batida de cada um dos outros.
+- Quem fica sem ponto sai do jogo.
+- Ganha quem sobrar por último.
+
+Exemplo (4 jogadores: A, B, C e D, sem prêmios)
+- A, B, C e D batem de 10, um em cada rodada: cada um fica com 20.
+  Sobram 20 no meio.
+- A bate de 9: fica com 30. Sobram 10 no meio.
+- B bate de 10 (vale 20): puxa os 10 do meio e os outros 10 descem de
+  cada um. Fica A=20, B=30, C=10, D=10. O meio acabou: começa a descida.
+- C bate de 9 (vale 10): A=10, B=20, D=0. D sai.
+
+
+8. PRÊMIOS
+------------------------------
+Os valores saíram de uma simulação com milhões de mãos (pasta simulacao/):
+quanto mais difícil, mais vale. São para uma mesa de 4 jogadores; o app
+ajusta pelo tamanho da mesa (2 jogadores x0,5 · 3 x0,75 · 4 x1 · 5 x1,15 ·
+6 x1,35 · 7 x1,45 · 8 x1,5).
+
+BRONZE (40)
+- Cor única: a batida inteira em sequências de uma cor só (♥♦ ou ♠♣).
+- Figuras: a batida inteira só com J, Q, K e Ás.
+
+PRATA (60)
+- Escada colorida: 9 valores seguidos (10 na batida de 10), em
+  sequências de qualquer pinta.
+- Uma pinta só: a batida inteira em sequências da mesma pinta.
+
+OURO (80)
+- Gêmeas: dois jogos idênticos, carta por carta.
+- Escadão colorido: do Ás até o 9 (até o 10 na batida de 10), com as
+  pintas misturadas.
+
+DIAMANTE (120)
+- Bandeira: três sequências com os mesmos valores em três pintas
+  diferentes. Ex.: 4♥ 5♥ 6♥ 4♠ 5♠ 6♠ 4♦ 5♦ 6♦
+- Escada: 9 cartas seguidas da mesma pinta (10 na batida de 10).
+
+LENDA (ganha a partida)
+- Escadão: do Ás até o 9 da mesma pinta.
+
+COMO OS PRÊMIOS CONTAM
+- Prêmios somam. Quando um está dentro do outro (toda Escada também é
+  Uma pinta só), vale só o maior.
+- Cada coringa ou Joker usado no lugar de outra carta tira 10 pontos de
+  cada prêmio. Coringa no lugar dele mesmo não conta.
+
+ROLETA (sorteada a cada rodada pelo app)
+- 3 trincas sorteadas: cada uma vale 60 se estiver na batida.
+- 1 quadra sorteada: só o valor (ex.: quadra de 7). Vale 60 se a batida
+  de 10 tiver uma quadra desse valor (3 pintas diferentes + 1 repetida).
+- Trinca e quadra da roleta só valem se forem feitas SEM coringa.

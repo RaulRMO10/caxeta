@@ -1,0 +1,6 @@
+node_modules/
+dist/
+simulacao/resultados/progresso.txt
+*.log
+.DS_Store
+.vercel

@@ -1,0 +1,13 @@
+{
+  "name": "Caxeta",
+  "short_name": "Caxeta",
+  "description": "Placar da Caxeta: roleta de trincas, prêmios e pontos da rodada.",
+  "start_url": "/",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#052019",
+  "theme_color": "#052019",
+  "icons": [
+    { "src": "/icone.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
