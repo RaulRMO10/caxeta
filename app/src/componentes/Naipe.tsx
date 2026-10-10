@@ -1,7 +1,7 @@
 import { Fragment, ReactNode } from 'react';
 
 // Pintas desenhadas em SVG (alguns celulares mostram ♥ e ♦ como emoji).
-const CAMINHOS = [
+export const CAMINHOS_NAIPE = [
   // espadas
   'M12 1.5c-2.6 3.7-8.6 7-8.6 11.6 0 2.9 2.2 4.8 4.7 4.8 1.4 0 2.6-.6 3.3-1.5-.3 2.2-1.2 3.9-2.7 5.1h6.6c-1.5-1.2-2.4-2.9-2.7-5.1.7.9 1.9 1.5 3.3 1.5 2.5 0 4.7-1.9 4.7-4.8 0-4.6-6-7.9-8.6-11.6z',
   // copas
@@ -17,7 +17,7 @@ export const corDoNaipe = (n: number) => (n % 2 === 1 ? 'var(--vermelho-carta)' 
 export function Naipe({ n, tam = '1em', cor }: { n: number; tam?: string | number; cor?: string }) {
   return (
     <svg className="naipe" viewBox="0 0 24 24" width={tam} height={tam} aria-hidden="true" style={{ color: cor ?? corDoNaipe(n) }}>
-      <path d={CAMINHOS[n]} fill="currentColor" />
+      <path d={CAMINHOS_NAIPE[n]} fill="currentColor" />
     </svg>
   );
 }
