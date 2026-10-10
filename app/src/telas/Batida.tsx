@@ -109,8 +109,8 @@ export function FluxoBatida({ aberta, aoFechar, p, despachar }: {
 
         {passo === 'vira' && (
           <div>
-            <p className="nota">Para conferir a mão o app precisa saber os coringas.</p>
-            <SeletorCarta restantes={c => copiasDisponiveis(c, null)} aoEscolher={c => { despachar({ tipo: 'vira', carta: c }); setPasso('mao'); }} />
+            <p className="nota">Para conferir a mão o app precisa saber os coringas. A roleta desta rodada não vale: ela só gira quando a vira é informada antes.</p>
+            <SeletorCarta restantes={c => copiasDisponiveis(c, null)} aoEscolher={c => { despachar({ tipo: 'vira', carta: c, sortear: false }); setPasso('mao'); }} />
             <button className="botao botao-fantasma botao-cheio sem-premio" onClick={semPremio}>
               Sem prêmio: registrar só a batida (+{tam === 10 ? p.config.base10 : p.config.base9})
             </button>

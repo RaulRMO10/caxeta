@@ -36,7 +36,7 @@ export function TelaPremios({ cfg = CONFIG_PADRAO, jogadores = 4 }: { cfg?: Conf
           <span className="selo-nivel">Roleta</span>
           <h3>Bônus da rodada</h3>
         </header>
-        <p>Toda rodada o app sorteia {cfg.roleta.trincas} trincas{cfg.roleta.quadra ? ' e 1 quadra' : ''}, com as cartas exatas. É um bônus para movimentar a partida: só vale se o jogo for feito <b>sem coringa</b>, e não muda com o tamanho da mesa.</p>
+        <p>Assim que a vira é informada, o app sorteia {cfg.roleta.trincas} trincas{cfg.roleta.quadra ? ' e 1 quadra' : ''}, com as cartas exatas e sem nenhuma carta que seja coringa na rodada. É um bônus para movimentar a partida: só vale se o jogo for feito <b>sem coringa</b>, e não muda com o tamanho da mesa.</p>
         <div className="premio-linha-valor"><span>Cada trinca sorteada</span><b>+{valorTrincaRoleta(cfg)}</b></div>
         {cfg.roleta.quadra && (
           <>

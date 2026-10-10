@@ -31,8 +31,8 @@ export default function App() {
   const [info, setInfo] = useState<'premios' | 'regras' | null>(null);
   const [bater, setBater] = useState(false);
   const [ajustes, setAjustes] = useState(false);
-  // ao recarregar a página não gira a roleta de novo
-  const [roletaVista, setRoletaVista] = useState<number | null>(() => p?.rodada.numero ?? null);
+  // número do último sorteio da roleta que já girou na tela (ao recarregar a página não gira de novo)
+  const [roletaVista, setRoletaVista] = useState<number>(() => p?.rodada.roleta.sorteio ?? 0);
   const [mostrarUltimo, setMostrarUltimo] = useState(false);
   const [verCampeao, setVerCampeao] = useState(true);
   const [revanche, setRevanche] = useState<{ jogadores: Inscrito[]; partida: Partida } | null>(null);
@@ -47,18 +47,18 @@ export default function App() {
       return { partida, desfazer };
     });
     if (a.tipo === 'bateu') setMostrarUltimo(true);
-    if (a.tipo === 'nova') { setRoletaVista(null); setVerCampeao(true); setAba('rodada'); }
+    if (a.tipo === 'nova') { setVerCampeao(true); setAba('rodada'); }
   }, []);
 
-  const desfazerRodada = () => setEstado(s => {
-    if (!s.desfazer.length) return s;
-    const partida = s.desfazer[s.desfazer.length - 1];
-    const desfazer = s.desfazer.slice(0, -1);
+  const desfazerRodada = () => {
+    const partida = estado.desfazer[estado.desfazer.length - 1];
+    if (!partida) return;
+    const desfazer = estado.desfazer.slice(0, -1);
     salvar(partida, desfazer);
-    setRoletaVista(partida.rodada.numero);
+    setEstado({ partida, desfazer });
+    setRoletaVista(partida.rodada.roleta.sorteio);
     setVerCampeao(true);
-    return { partida, desfazer };
-  });
+  };
 
   const encerrar = () => {
     salvar(null, []);
@@ -95,7 +95,8 @@ export default function App() {
   // ---------- partida ----------
   const n = vivos(p).length;
   const ultimo = p.historico[p.historico.length - 1];
-  const mostrarRoleta = !p.campeaoId && !mostrarUltimo && roletaVista !== p.rodada.numero
+  // a roleta gira sozinha assim que é sorteada (quando a vira é informada)
+  const mostrarRoleta = !p.campeaoId && !mostrarUltimo && p.rodada.roleta.sorteio !== 0 && roletaVista !== p.rodada.roleta.sorteio
     && (p.rodada.roleta.trincas.length > 0 || p.rodada.roleta.quadra !== null);
   const campeao = p.campeaoId ? jogador(p, p.campeaoId) : null;
 
@@ -146,8 +147,9 @@ export default function App() {
 
       <Folha aberta={ajustes} aoFechar={() => setAjustes(false)} cheia titulo="Ajustes">
         <div className="ajustes">
-          <button className="botao botao-fantasma botao-cheio" onClick={() => { despachar({ tipo: 'roleta' }); setRoletaVista(-1); setAjustes(false); }}>
-            <Icone nome="roleta" tam={18} /> Sortear a roleta de novo
+          <button className="botao botao-fantasma botao-cheio" disabled={p.rodada.vira === null}
+            onClick={() => { despachar({ tipo: 'roleta' }); setAjustes(false); }}>
+            <Icone nome="roleta" tam={18} /> {p.rodada.vira === null ? 'A roleta gira depois da vira' : 'Sortear a roleta de novo'}
           </button>
           {tela.suportada && (
             <button className="botao botao-fantasma botao-cheio" onClick={tela.alternar}>
@@ -161,9 +163,9 @@ export default function App() {
       </Folha>
 
       {mostrarRoleta && (
-        <RoletaGirando key={`${p.rodada.numero}-${roletaVista}`} roleta={p.rodada.roleta} numero={p.rodada.numero}
+        <RoletaGirando key={`${p.rodada.roleta.sorteio}-${roletaVista}`} roleta={p.rodada.roleta} numero={p.rodada.numero}
           valorTrinca={valorTrincaRoleta(p.config)} valorQuadra={valorQuadraRoleta(p.config)}
-          aoTerminar={() => setRoletaVista(p.rodada.numero)} />
+          aoTerminar={() => setRoletaVista(p.rodada.roleta.sorteio)} />
       )}
 
       {mostrarUltimo && ultimo && (

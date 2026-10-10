@@ -124,6 +124,6 @@ export const DUVIDAS: [string, string][] = [
   ['Dá para ganhar dois prêmios na mesma batida?', 'Dá, e eles somam. Só quando um prêmio está dentro do outro (toda Escada também é Uma pinta só, por exemplo) vale só o maior.'],
   ['Por que o prêmio muda com o número de jogadores?', 'Com mais gente na mesa, é mais difícil completar um prêmio antes de alguém bater. A simulação mediu isso: com 2 jogadores o prêmio vale metade, com 6 vale uns 35% a mais. Dá para desligar nos ajustes.'],
   ['De onde vieram os valores dos prêmios?', 'De uma simulação com milhões de mãos: para cada prêmio, a mesma mão foi jogada correndo atrás dele e jogando seguro. O valor é o que faz a aposta valer a pena.'],
-  ['Como funciona a roleta?', 'Toda rodada o app sorteia 3 trincas e 1 quadra exatas. É um bônus para movimentar a partida: quem bater com uma delas feita sem coringa ganha +10 por trinca e +20 pela quadra (a quadra só entra na batida de 10). O bônus não muda com o tamanho da mesa.'],
+  ['Como funciona a roleta?', 'Assim que você informa a vira, o app sorteia 3 trincas e 1 quadra exatas, sem nenhuma carta que seja coringa naquela rodada. É um bônus para movimentar a partida: quem bater com uma delas feita sem coringa ganha +10 por trinca e +20 pela quadra (a quadra só entra na batida de 10). O bônus não muda com o tamanho da mesa.'],
   ['Errei a rodada, e agora?', 'No Placar tem "Desfazer última rodada". Também dá para ajustar os pontos de alguém na mão.'],
 ];

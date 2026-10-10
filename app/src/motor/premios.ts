@@ -1,6 +1,6 @@
 import { arranjosPossiveis, Arranjo, preencher, Vaga } from './arranjo';
 import { Carta, Contexto, valorDe } from './cartas';
-import { DOBRAS, Jogo, TRINCAS } from './jogos';
+import { DOBRAS, Jogo, JOGOS, TRINCAS } from './jogos';
 
 export type Nivel = 'bronze' | 'prata' | 'ouro' | 'diamante' | 'lenda';
 
@@ -61,23 +61,36 @@ export const PREMIO = Object.fromEntries(PREMIOS.map(p => [p.id, p])) as Record<
 
 // ---------- Roleta ----------
 // Bônus da rodada: trincas e uma quadra exatas, que só valem feitas sem coringa.
+// É sorteada depois da vira e nunca usa as cartas que são coringa na rodada.
 export interface Roleta {
   trincas: number[]; // ids de trincas
   quadra: number | null; // id de uma dobra (4 cartas exatas)
+  sorteio: number; // muda a cada sorteio; 0 = ainda não sorteada (falta a vira)
 }
 
-export function sortearRoleta(nTrincas: number, comQuadra: boolean, rand = Math.random): Roleta {
+export const ROLETA_VAZIA: Roleta = { trincas: [], quadra: null, sorteio: 0 };
+
+let ultimoSorteio = 0;
+
+export function sortearRoleta(nTrincas: number, comQuadra: boolean, ctx: Contexto, rand = Math.random): Roleta {
+  const semCoringa = (j: Jogo) => j.slots.every(s => !ctx.ehCoringa(s));
+  const trincas = TRINCAS.filter(semCoringa);
   const ids = new Set<number>();
-  while (ids.size < nTrincas) ids.add(TRINCAS[Math.floor(rand() * TRINCAS.length)].id);
+  while (ids.size < Math.min(nTrincas, trincas.length)) ids.add(trincas[Math.floor(rand() * trincas.length)].id);
   let quadra: number | null = null;
   if (comQuadra) {
     // metade das vezes sequência de 4, metade quadra de iguais
     const seq = rand() < 0.5;
-    const lista = DOBRAS.filter(d => d.seq === seq);
+    const lista = DOBRAS.filter(d => d.seq === seq && semCoringa(d));
     quadra = lista[Math.floor(rand() * lista.length)].id;
   }
-  return { trincas: [...ids], quadra };
+  ultimoSorteio = Math.max(Date.now(), ultimoSorteio + 1);
+  return { trincas: [...ids], quadra, sorteio: ultimoSorteio };
 }
+
+// A roleta tem alguma carta que é coringa com esta vira? (acontece quando a vira é corrigida)
+export const roletaTemCoringa = (r: Roleta, ctx: Contexto) =>
+  [...r.trincas, ...(r.quadra !== null ? [r.quadra] : [])].some(id => JOGOS[id].slots.some(ctx.ehCoringa));
 
 // ---------- Configuração da pontuação ----------
 export interface ConfigPontos {

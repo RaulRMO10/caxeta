@@ -2,11 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { arranjosPossiveis } from './arranjo';
 import { carta, cartas, contextoDaVira, JOKER, nomeCarta } from './cartas';
 import { DOBRAS, TRINCAS } from './jogos';
-import { calcularBatida, CONFIG_PADRAO, Roleta } from './premios';
+import { calcularBatida, CONFIG_PADRAO, Roleta, roletaTemCoringa, sortearRoleta } from './premios';
 import { aplicarBatida, novaPartida, reduzir, funcoes, Partida } from '../estado/partida';
 
 const ctx = (v: string) => contextoDaVira(carta(v));
-const semRoleta: Roleta = { trincas: [], quadra: null };
+const semRoleta: Roleta = { trincas: [], quadra: null, sorteio: 1 };
 const calc = (mao: string, vira: string, roleta = semRoleta, n = 4) =>
   calcularBatida(cartas(mao), ctx(vira), roleta, CONFIG_PADRAO, n);
 const nomes = (r: ReturnType<typeof calc>) => r!.linhas.map(l => `${l.rotulo}:${l.ganha ? 'ganha' : l.pontos}`);
@@ -82,23 +82,23 @@ describe('prêmios', () => {
 describe('roleta', () => {
   const a23 = TRINCAS.find(j => j.slots.join() === cartas('A♥ 2♥ 3♥').join())!.id;
   it('trinca sorteada sem coringa vale', () => {
-    expect(nomes(calc('A♥ 2♥ 3♥ 5♠ 5♥ 5♣ 9♦ 10♦ J♦', '7♣', { trincas: [a23], quadra: null }))).toEqual(['Batida de 9:10', 'Trinca da roleta:10']);
+    expect(nomes(calc('A♥ 2♥ 3♥ 5♠ 5♥ 5♣ 9♦ 10♦ J♦', '7♣', { trincas: [a23], quadra: null, sorteio: 1 }))).toEqual(['Batida de 9:10', 'Trinca da roleta:10']);
   });
   it('com coringa não vale', () => {
     // vira 2♦: 3♦ é coringa no lugar do 2♥
-    expect(nomes(calc('A♥ 3♦ 3♥ 5♠ 5♥ 5♣ 9♦ 10♦ J♦', '2♦', { trincas: [a23], quadra: null }))).toEqual(['Batida de 9:10']);
+    expect(nomes(calc('A♥ 3♦ 3♥ 5♠ 5♥ 5♣ 9♦ 10♦ J♦', '2♦', { trincas: [a23], quadra: null, sorteio: 1 }))).toEqual(['Batida de 9:10']);
   });
   const dobra = (txt: string) => DOBRAS.find(d => [...d.slots].sort().join() === [...cartas(txt)].sort().join())!.id;
   it('quadra sorteada: só as 4 cartas exatas, sem coringa', () => {
     const q = dobra('9♠ 9♠ 9♥ 9♦');
-    expect(nomes(calc('9♠ 9♠ 9♥ 9♦ 5♠ 6♠ 7♠ 2♦ 3♦ 4♦', 'J♣', { trincas: [], quadra: q }))).toEqual(['Batida de 10:20', 'Quadra da roleta:20']);
+    expect(nomes(calc('9♠ 9♠ 9♥ 9♦ 5♠ 6♠ 7♠ 2♦ 3♦ 4♦', 'J♣', { trincas: [], quadra: q, sorteio: 1 }))).toEqual(['Batida de 10:20', 'Quadra da roleta:20']);
     // outra quadra de 9 não vale
-    expect(nomes(calc('9♣ 9♣ 9♥ 9♦ 5♠ 6♠ 7♠ 2♦ 3♦ 4♦', 'J♠', { trincas: [], quadra: q }))).toEqual(['Batida de 10:20']);
+    expect(nomes(calc('9♣ 9♣ 9♥ 9♦ 5♠ 6♠ 7♠ 2♦ 3♦ 4♦', 'J♠', { trincas: [], quadra: q, sorteio: 1 }))).toEqual(['Batida de 10:20']);
     // sequência de 4 sorteada
     const s = dobra('4♥ 5♥ 6♥ 7♥');
-    expect(nomes(calc('4♥ 5♥ 6♥ 7♥ 5♠ 6♠ 7♠ 2♦ 3♦ 4♦', 'J♣', { trincas: [], quadra: s }))).toEqual(['Batida de 10:20', 'Quadra da roleta:20']);
+    expect(nomes(calc('4♥ 5♥ 6♥ 7♥ 5♠ 6♠ 7♠ 2♦ 3♦ 4♦', 'J♣', { trincas: [], quadra: s, sorteio: 1 }))).toEqual(['Batida de 10:20', 'Quadra da roleta:20']);
     // vira 6♠: 7♠ é coringa no lugar do 7♥, não vale
-    expect(nomes(calc('4♥ 5♥ 6♥ 7♠ 5♣ 6♣ 7♣ 2♦ 3♦ 4♦', '6♠', { trincas: [], quadra: s }))).toEqual(['Batida de 10:20']);
+    expect(nomes(calc('4♥ 5♥ 6♥ 7♠ 5♣ 6♣ 7♣ 2♦ 3♦ 4♦', '6♠', { trincas: [], quadra: s, sorteio: 1 }))).toEqual(['Batida de 10:20']);
   });
 });
 
@@ -143,5 +143,39 @@ describe('subida e descida', () => {
     expect(funcoes(p!)).toEqual({ embaralha: ids(p!)[0], corta: ids(p!)[3], comeca: ids(p!)[1] });
     p = reduzir(p, { tipo: 'bateu', vencedorId: ids(p!)[2], tam: 9, mao: null, linhas: [], total: 10, ganhaPartida: false });
     expect(funcoes(p!)).toEqual({ embaralha: ids(p!)[1], corta: ids(p!)[0], comeca: ids(p!)[2] });
+  });
+});
+
+describe('roleta sorteada depois da vira', () => {
+  it('nunca usa carta que é coringa na rodada', () => {
+    for (let v = 0; v < 52; v++) {
+      const ctx = contextoDaVira(v);
+      for (let k = 0; k < 20; k++) {
+        const r = sortearRoleta(3, true, ctx);
+        expect(r.trincas.length).toBe(3);
+        expect(r.quadra).not.toBeNull();
+        expect(roletaTemCoringa(r, ctx)).toBe(false);
+      }
+    }
+  });
+  it('só gira quando a vira é informada, e não gira se a vira veio na hora da batida', () => {
+    let p: Partida | null = novaPartida(CONFIG_PADRAO, ['A', 'B'].map(nome => ({ nome, cor: '#fff' })), 0);
+    expect(p.rodada.roleta.sorteio).toBe(0);
+    p = reduzir(p, { tipo: 'vira', carta: carta('6♠') });
+    const primeira = p!.rodada.roleta;
+    expect(primeira.sorteio).not.toBe(0);
+    // corrigir a vira para uma que não dá conflito mantém a roleta
+    const semConflito = [...Array(52).keys()].find(v => !roletaTemCoringa(primeira, contextoDaVira(v)))!;
+    p = reduzir(p, { tipo: 'vira', carta: semConflito });
+    expect(p!.rodada.roleta).toBe(primeira);
+    // corrigir para uma vira que deixa coringa na roleta sorteia de novo
+    const comConflito = [...Array(52).keys()].find(v => roletaTemCoringa(primeira, contextoDaVira(v)))!;
+    p = reduzir(p, { tipo: 'vira', carta: comConflito });
+    expect(roletaTemCoringa(p!.rodada.roleta, contextoDaVira(comConflito))).toBe(false);
+    // próxima rodada começa sem roleta; vira informada na batida não sorteia
+    p = reduzir(p, { tipo: 'bateu', vencedorId: p!.jogadores[0].id, tam: 9, mao: null, linhas: [], total: 10, ganhaPartida: false });
+    expect(p!.rodada.roleta.sorteio).toBe(0);
+    p = reduzir(p, { tipo: 'vira', carta: carta('K♥'), sortear: false });
+    expect(p!.rodada.roleta.sorteio).toBe(0);
   });
 });

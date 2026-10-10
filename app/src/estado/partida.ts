@@ -1,5 +1,5 @@
-import { Carta } from '../motor/cartas';
-import { CONFIG_PADRAO, ConfigPontos, LinhaConta, Roleta, sortearRoleta } from '../motor/premios';
+import { Carta, contextoDaVira } from '../motor/cartas';
+import { CONFIG_PADRAO, ConfigPontos, LinhaConta, Roleta, ROLETA_VAZIA, roletaTemCoringa, sortearRoleta } from '../motor/premios';
 
 export interface Jogador {
   id: string;
@@ -110,7 +110,7 @@ export function aplicarBatida(p: Partida, vencedorId: string, total: number, gan
 // ---------- Ações ----------
 export type Acao =
   | { tipo: 'nova'; config: ConfigPontos; jogadores: { nome: string; cor: string }[]; dealer: number }
-  | { tipo: 'vira'; carta: Carta | null }
+  | { tipo: 'vira'; carta: Carta | null; sortear?: boolean } // sortear: false quando a vira só é informada na hora da batida
   | { tipo: 'roleta' }
   | { tipo: 'queimar'; id: string }
   | { tipo: 'bateu'; vencedorId: string; tam: 9 | 10; mao: Carta[] | null; linhas: LinhaConta[]; total: number; ganhaPartida: boolean }
@@ -118,7 +118,7 @@ export type Acao =
   | { tipo: 'meio'; valor: number }
   | { tipo: 'config'; config: ConfigPontos };
 
-const novaRoleta = (cfg: ConfigPontos) => sortearRoleta(cfg.roleta.trincas, cfg.roleta.quadra);
+const novaRoleta = (cfg: ConfigPontos, vira: Carta) => sortearRoleta(cfg.roleta.trincas, cfg.roleta.quadra, contextoDaVira(vira));
 
 export function novaPartida(config: ConfigPontos, nomes: { nome: string; cor: string }[], dealer: number): Partida {
   const jogadores = nomes.map((n, i) => ({ id: `j${i}-${Date.now().toString(36)}`, nome: n.nome, cor: n.cor, pontos: 0, vivo: true }));
@@ -126,7 +126,7 @@ export function novaPartida(config: ConfigPontos, nomes: { nome: string; cor: st
     config,
     jogadores,
     meio: config.meio,
-    rodada: { numero: 1, dealerId: jogadores[dealer].id, vira: null, roleta: novaRoleta(config), queimados: [] },
+    rodada: { numero: 1, dealerId: jogadores[dealer].id, vira: null, roleta: ROLETA_VAZIA, queimados: [] },
     historico: [],
     campeaoId: null,
   };
@@ -136,10 +136,17 @@ export function reduzir(p: Partida | null, a: Acao): Partida | null {
   if (a.tipo === 'nova') return novaPartida(a.config, a.jogadores, a.dealer);
   if (!p) return p;
   switch (a.tipo) {
-    case 'vira':
-      return { ...p, rodada: { ...p.rodada, vira: a.carta } };
+    case 'vira': {
+      // a roleta gira depois da vira; se a vira foi corrigida e a roleta ficou com coringa, sorteia de novo
+      const rodada = { ...p.rodada, vira: a.carta };
+      const r = p.rodada.roleta;
+      if (a.carta !== null && a.sortear !== false && (r.sorteio === 0 || roletaTemCoringa(r, contextoDaVira(a.carta))))
+        rodada.roleta = novaRoleta(p.config, a.carta);
+      return { ...p, rodada };
+    }
     case 'roleta':
-      return { ...p, rodada: { ...p.rodada, roleta: novaRoleta(p.config) } };
+      if (p.rodada.vira === null) return p;
+      return { ...p, rodada: { ...p.rodada, roleta: novaRoleta(p.config, p.rodada.vira) } };
     case 'queimar': {
       const q = p.rodada.queimados;
       return { ...p, rodada: { ...p.rodada, queimados: q.includes(a.id) ? q.filter(x => x !== a.id) : [...q, a.id] } };
@@ -154,7 +161,7 @@ export function reduzir(p: Partida | null, a: Acao): Partida | null {
       const depois: Partida = { ...p, jogadores: r.jogadores, meio: r.meio, historico: [...p.historico, registro], campeaoId: r.campeaoId };
       // quem começou passa a embaralhar
       const proximoDealer = vizinho(depois, p.rodada.dealerId, 1);
-      depois.rodada = { numero: p.rodada.numero + 1, dealerId: proximoDealer, vira: null, roleta: novaRoleta(p.config), queimados: [] };
+      depois.rodada = { numero: p.rodada.numero + 1, dealerId: proximoDealer, vira: null, roleta: ROLETA_VAZIA, queimados: [] };
       return depois;
     }
     case 'ajustar':
@@ -170,16 +177,22 @@ export function reduzir(p: Partida | null, a: Acao): Partida | null {
 const CHAVE = 'caxeta.partida.v1';
 const CHAVE_DESFAZER = 'caxeta.desfazer.v1';
 
-// Partidas salvas quando a quadra da roleta era só um valor: sorteia de novo e usa o bônus novo.
+// Partidas salvas por versões antigas do app: a quadra já foi só um valor, e a roleta
+// já foi sorteada antes da vira (podendo ter coringa).
 function atualizar(p: Partida): Partida {
   const antiga = (r: Roleta) => typeof (r.quadra as unknown) === 'object' && r.quadra !== null;
-  if (!antiga(p.rodada.roleta)) return p;
-  const config = { ...p.config, roleta: { ...p.config.roleta, pontosTrinca: CONFIG_PADRAO.roleta.pontosTrinca, pontosQuadra: CONFIG_PADRAO.roleta.pontosQuadra } };
+  const normal = (r: Roleta): Roleta => ({ trincas: r.trincas, quadra: antiga(r) ? null : r.quadra, sorteio: r.sorteio ?? 1 });
+  let config = p.config;
+  if (antiga(p.rodada.roleta))
+    config = { ...config, roleta: { ...config.roleta, pontosTrinca: CONFIG_PADRAO.roleta.pontosTrinca, pontosQuadra: CONFIG_PADRAO.roleta.pontosQuadra } };
+  let roleta = normal(p.rodada.roleta);
+  if (p.rodada.vira === null) roleta = ROLETA_VAZIA;
+  else if (antiga(p.rodada.roleta) || roletaTemCoringa(roleta, contextoDaVira(p.rodada.vira))) roleta = novaRoleta(config, p.rodada.vira);
   return {
     ...p,
     config,
-    rodada: { ...p.rodada, roleta: novaRoleta(config) },
-    historico: p.historico.map(h => (antiga(h.roleta) ? { ...h, roleta: { ...h.roleta, quadra: null } } : h)),
+    rodada: { ...p.rodada, roleta },
+    historico: p.historico.map(h => ({ ...h, roleta: normal(h.roleta) })),
   };
 }
 

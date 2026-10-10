@@ -15,14 +15,28 @@ function linhasDa(roleta: TipoRoleta) {
 }
 
 // Quadro da roleta na tela da rodada.
-export function RoletaResumo({ roleta, valorTrinca, valorQuadra, ehCoringa, aoRever }: {
+export function RoletaResumo({ roleta, ativa, valorTrinca, valorQuadra, ehCoringa, aoRever, aoInformarVira }: {
   roleta: TipoRoleta;
+  ativa: boolean; // a configuração tem roleta
   valorTrinca: number;
   valorQuadra: number;
   ehCoringa?: (c: TipoCarta) => boolean;
   aoRever: () => void;
+  aoInformarVira: () => void;
 }) {
   const linhas = linhasDa(roleta);
+  if (!ativa) return null;
+  if (roleta.sorteio === 0) {
+    return (
+      <button className="painel roleta roleta-espera" onClick={aoInformarVira}>
+        <span className="roleta-espera-icone"><Icone nome="roleta" tam={26} /></span>
+        <span>
+          <strong>Roleta da rodada</strong>
+          <small>Gira assim que você informar a vira</small>
+        </span>
+      </button>
+    );
+  }
   if (!linhas.length) return null;
   return (
     <section className="painel roleta">
@@ -41,7 +55,7 @@ export function RoletaResumo({ roleta, valorTrinca, valorQuadra, ehCoringa, aoRe
           </li>
         ))}
       </ol>
-      <p className="nota">Bônus da rodada: só vale feito sem coringa{roleta.quadra !== null ? ', e a quadra só na batida de 10' : ''}.</p>
+      <p className="nota">Bônus da rodada: só vale feito sem coringa{roleta.quadra !== null ? ', e a quadra só na batida de 10' : ''}. Nunca sai carta que é coringa na rodada.</p>
     </section>
   );
 }

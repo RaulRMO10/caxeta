@@ -180,6 +180,10 @@ COMO OS PRÊMIOS CONTAM
 ROLETA (bônus sorteado a cada rodada pelo app)
 - É um bônus pequeno para movimentar a partida. Não muda com o tamanho
   da mesa.
+- É sorteada logo depois de virar a vira, e nunca usa as cartas que são
+  coringa naquela rodada (nem o espelho).
+- Se alguém bater antes de a vira ser informada no app, aquela rodada
+  fica sem roleta.
 - 3 trincas sorteadas, com as cartas exatas: +10 cada uma que estiver na
   batida.
 - 1 quadra sorteada, com as 4 cartas exatas (uma sequência de 4 ou uma

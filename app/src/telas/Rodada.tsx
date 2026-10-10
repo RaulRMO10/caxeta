@@ -86,8 +86,9 @@ export function TelaRodada({ p, despachar, aoBater, aoRoleta }: {
         )}
       </section>
 
-      <RoletaResumo roleta={p.rodada.roleta} valorTrinca={valorTrincaRoleta(p.config)} valorQuadra={valorQuadraRoleta(p.config)}
-        ehCoringa={ctx?.ehCoringa} aoRever={aoRoleta} />
+      <RoletaResumo roleta={p.rodada.roleta} ativa={p.config.roleta.trincas > 0 || p.config.roleta.quadra}
+        valorTrinca={valorTrincaRoleta(p.config)} valorQuadra={valorQuadraRoleta(p.config)}
+        ehCoringa={ctx?.ehCoringa} aoRever={aoRoleta} aoInformarVira={() => setEscolherVira(true)} />
 
       {p.rodada.queimados.length > 0 && (
         <section className="painel queimados">
