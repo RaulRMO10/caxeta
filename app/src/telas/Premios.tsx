@@ -1,7 +1,6 @@
 import { CSSProperties } from 'react';
 import { Carta } from '../componentes/Carta';
 import { ComNaipes } from '../componentes/Naipe';
-import { ExemploQuadra } from '../componentes/Roleta';
 import { cartas } from '../motor/cartas';
 import { CONFIG_PADRAO, ConfigPontos, MULTIPLICADOR_MESA, Nivel, NIVEIS, PREMIOS, valorPremio, valorQuadraRoleta, valorTrincaRoleta } from '../motor/premios';
 
@@ -32,17 +31,24 @@ export function TelaPremios({ cfg = CONFIG_PADRAO, jogadores = 4 }: { cfg?: Conf
         </ul>
       </section>
 
-      <section className="painel premio-cartao nivel-prata" style={{ '--cor': NIVEIS.prata.cor } as CSSProperties}>
+      <section className="painel premio-cartao nivel-bronze" style={{ '--cor': NIVEIS.bronze.cor } as CSSProperties}>
         <header className="premio-topo">
           <span className="selo-nivel">Roleta</span>
-          <h3>Trinca e quadra sorteadas</h3>
+          <h3>Bônus da rodada</h3>
         </header>
-        <p>Toda rodada o app sorteia {cfg.roleta.trincas} trincas{cfg.roleta.quadra ? ' e um valor de quadra' : ''}. Só valem se feitas <b>sem coringa</b>.</p>
-        <div className="premio-linha-valor"><span>Cada trinca sorteada</span><b>+{valorTrincaRoleta(cfg, jogadores)}</b></div>
+        <p>Toda rodada o app sorteia {cfg.roleta.trincas} trincas{cfg.roleta.quadra ? ' e 1 quadra' : ''}, com as cartas exatas. É um bônus para movimentar a partida: só vale se o jogo for feito <b>sem coringa</b>, e não muda com o tamanho da mesa.</p>
+        <div className="premio-linha-valor"><span>Cada trinca sorteada</span><b>+{valorTrincaRoleta(cfg)}</b></div>
         {cfg.roleta.quadra && (
           <>
-            <div className="premio-linha-valor"><span>Quadra do valor sorteado (batida de 10)</span><b>+{valorQuadraRoleta(cfg, jogadores)}</b></div>
-            <div className="exemplo-cartas"><ExemploQuadra valor={7} /><small className="nota">ex.: quadra de 7, 3 pintas + 1 repetida</small></div>
+            <div className="premio-linha-valor"><span>Quadra sorteada (só na batida de 10)</span><b>+{valorQuadraRoleta(cfg)}</b></div>
+            <div className="exemplo-cartas">
+              <Exemplo txt="4♥ 5♥ 6♥" /><small className="nota">ex. de trinca</small>
+            </div>
+            <div className="exemplo-cartas">
+              <div className="exemplo-jogo">{cartas('7♠ 7♠ 7♥ 7♦').map((c, k) => <Carta key={k} c={c} tam={28} />)}</div>
+              <div className="exemplo-jogo">{cartas('9♣ 10♣ J♣ Q♣').map((c, k) => <Carta key={k} c={c} tam={28} />)}</div>
+              <small className="nota">ex. de quadras</small>
+            </div>
           </>
         )}
       </section>

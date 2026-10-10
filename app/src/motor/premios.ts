@@ -1,6 +1,6 @@
 import { arranjosPossiveis, Arranjo, preencher, Vaga } from './arranjo';
 import { Carta, Contexto, valorDe } from './cartas';
-import { Jogo, TRINCAS } from './jogos';
+import { DOBRAS, Jogo, TRINCAS } from './jogos';
 
 export type Nivel = 'bronze' | 'prata' | 'ouro' | 'diamante' | 'lenda';
 
@@ -60,23 +60,24 @@ export const PREMIOS: DefPremio[] = [
 export const PREMIO = Object.fromEntries(PREMIOS.map(p => [p.id, p])) as Record<PremioId, DefPremio>;
 
 // ---------- Roleta ----------
-// A quadra sorteada é só um valor: vale qualquer quadra de iguais desse valor (sem coringa).
-export interface QuadraSorteada { valor: number }
-
+// Bônus da rodada: trincas e uma quadra exatas, que só valem feitas sem coringa.
 export interface Roleta {
-  trincas: number[]; // ids de jogos (trincas exatas)
-  quadra: QuadraSorteada | null;
+  trincas: number[]; // ids de trincas
+  quadra: number | null; // id de uma dobra (4 cartas exatas)
 }
 
 export function sortearRoleta(nTrincas: number, comQuadra: boolean, rand = Math.random): Roleta {
   const ids = new Set<number>();
   while (ids.size < nTrincas) ids.add(TRINCAS[Math.floor(rand() * TRINCAS.length)].id);
-  let quadra: QuadraSorteada | null = null;
-  if (comQuadra) quadra = { valor: 1 + Math.floor(rand() * 13) };
+  let quadra: number | null = null;
+  if (comQuadra) {
+    // metade das vezes sequência de 4, metade quadra de iguais
+    const seq = rand() < 0.5;
+    const lista = DOBRAS.filter(d => d.seq === seq);
+    quadra = lista[Math.floor(rand() * lista.length)].id;
+  }
   return { trincas: [...ids], quadra };
 }
-
-export const quadraServe = (q: QuadraSorteada, j: Jogo) => j.tam === 4 && !j.seq && j.valor === q.valor;
 
 // ---------- Configuração da pontuação ----------
 export interface ConfigPontos {
@@ -96,7 +97,7 @@ export const CONFIG_PADRAO: ConfigPontos = {
   desconto: 10,
   ajusteMesa: true,
   premios: Object.fromEntries(PREMIOS.map(p => [p.id, { ativo: true, pontos: p.pontos }])) as ConfigPontos['premios'],
-  roleta: { trincas: 3, pontosTrinca: 60, quadra: true, pontosQuadra: 60 },
+  roleta: { trincas: 3, pontosTrinca: 10, quadra: true, pontosQuadra: 20 },
 };
 
 // Quanto mais gente na mesa, mais difícil completar um prêmio antes de alguém bater.
@@ -111,11 +112,9 @@ export const arred5 = (x: number) => Math.round(x / 5) * 5;
 export const valorPremio = (cfg: ConfigPontos, id: PremioId, jogadores: number) =>
   arred5(cfg.premios[id].pontos * multiplicador(cfg, jogadores));
 
-export const valorTrincaRoleta = (cfg: ConfigPontos, jogadores: number) =>
-  arred5(cfg.roleta.pontosTrinca * multiplicador(cfg, jogadores));
-
-export const valorQuadraRoleta = (cfg: ConfigPontos, jogadores: number) =>
-  arred5(cfg.roleta.pontosQuadra * multiplicador(cfg, jogadores));
+// A roleta é um bônus fixo para movimentar a partida: não muda com o tamanho da mesa.
+export const valorTrincaRoleta = (cfg: ConfigPontos) => cfg.roleta.pontosTrinca;
+export const valorQuadraRoleta = (cfg: ConfigPontos) => cfg.roleta.pontosQuadra;
 
 // ---------- Prêmios de um arranjo ----------
 function premiosFixos(jogos: Jogo[], tam: number): PremioId[] {
@@ -194,10 +193,10 @@ function avaliar(arr: Arranjo, mao: Carta[], ctx: Contexto, roleta: Roleta, cfg:
     if (vistos.has(j.id) || !natural(j, mao)) return;
     if (roleta.trincas.includes(j.id)) {
       vistos.add(j.id); roletaFeita.push(i);
-      linhas.push({ rotulo: 'Trinca da roleta', nivel: 'prata', pontos: valorTrincaRoleta(cfg, jogadores) });
-    } else if (cfg.roleta.quadra && roleta.quadra && quadraServe(roleta.quadra, j)) {
+      linhas.push({ rotulo: 'Trinca da roleta', nivel: 'bronze', pontos: valorTrincaRoleta(cfg) });
+    } else if (cfg.roleta.quadra && roleta.quadra === j.id) {
       vistos.add(j.id); roletaFeita.push(i);
-      linhas.push({ rotulo: 'Quadra da roleta', nivel: 'prata', pontos: valorQuadraRoleta(cfg, jogadores) });
+      linhas.push({ rotulo: 'Quadra da roleta', nivel: 'bronze', pontos: valorQuadraRoleta(cfg) });
     }
   });
   const total = linhas.reduce((s, l) => s + l.pontos, 0);

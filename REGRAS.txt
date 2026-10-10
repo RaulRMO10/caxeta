@@ -177,8 +177,11 @@ COMO OS PRÊMIOS CONTAM
 - Cada coringa ou Joker usado no lugar de outra carta tira 10 pontos de
   cada prêmio. Coringa no lugar dele mesmo não conta.
 
-ROLETA (sorteada a cada rodada pelo app)
-- 3 trincas sorteadas: cada uma vale 60 se estiver na batida.
-- 1 quadra sorteada: só o valor (ex.: quadra de 7). Vale 60 se a batida
-  de 10 tiver uma quadra desse valor (3 pintas diferentes + 1 repetida).
-- Trinca e quadra da roleta só valem se forem feitas SEM coringa.
+ROLETA (bônus sorteado a cada rodada pelo app)
+- É um bônus pequeno para movimentar a partida. Não muda com o tamanho
+  da mesa.
+- 3 trincas sorteadas, com as cartas exatas: +10 cada uma que estiver na
+  batida.
+- 1 quadra sorteada, com as 4 cartas exatas (uma sequência de 4 ou uma
+  quadra de iguais): +20, só na batida de 10.
+- Trincas e quadra da roleta só valem se forem feitas SEM coringa.

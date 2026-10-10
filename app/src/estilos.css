@@ -308,9 +308,6 @@ h1, h2, h3, h4 { font-weight: 700; }
 .roleta-num { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; font-weight: 800; background: rgba(242, 193, 78, 0.15); color: var(--ouro); border: 1px solid rgba(242, 193, 78, 0.4); flex: none; }
 .roleta-cartas { display: flex; gap: 5px; flex: 1; }
 .selo-pontos { margin-left: auto; font-weight: 800; font-size: 15px; color: #3a2604; background: linear-gradient(180deg, #ffd56b, #e8a91e); padding: 4px 10px; border-radius: 10px; box-shadow: 0 3px 10px rgba(232, 169, 30, 0.3); flex: none; }
-.roleta-quadra-info { flex: 1; display: flex; flex-direction: column; gap: 2px; }
-.roleta-quadra-info strong { font-size: 16px; }
-.roleta-quadra-info small { color: var(--texto-2); font-size: 12px; }
 .roleta-quadra .roleta-num, .roleta-linha-quadra .roleta-num { background: rgba(192, 132, 252, 0.15); color: #d8b4fe; border-color: rgba(192, 132, 252, 0.45); }
 
 .queimados { display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; border-color: rgba(251, 146, 60, 0.4); background: rgba(251, 146, 60, 0.07); }
@@ -346,11 +343,6 @@ h1, h2, h3, h4 { font-weight: 700; }
 .rolo { overflow: hidden; border-radius: 10px; background: rgba(0, 0, 0, 0.35); box-shadow: inset 0 10px 10px -8px rgba(0, 0, 0, 0.75), inset 0 -10px 10px -8px rgba(0, 0, 0, 0.75); position: relative; flex: none; }
 .rolo-faixa { transition: transform 1.7s cubic-bezier(0.12, 0.82, 0.25, 1.04); will-change: transform; }
 .rolo-item { display: grid; place-items: center; }
-.rolo-valor { width: 66px; border-radius: 12px; }
-.rolo-valor-item { font-size: 46px; font-weight: 800; color: #e9d5ff; text-shadow: 0 0 18px rgba(192, 132, 252, 0.7); }
-.roleta-quadra-giro { display: flex; align-items: center; gap: 12px; flex: 1; }
-.roleta-quadra-texto strong { display: block; font-size: 18px; }
-.roleta-quadra-texto small { color: var(--texto-2); font-size: 12px; }
 .roleta-linha-quadra.pousou { border-color: rgba(192, 132, 252, 0.8); background: rgba(192, 132, 252, 0.09); box-shadow: 0 0 0 1px rgba(192, 132, 252, 0.4) inset, 0 0 26px rgba(192, 132, 252, 0.25); }
 .roleta-aviso { margin: 4px 0; color: var(--texto-2); font-size: 13px; }
 .roleta-botao { width: 100%; margin-top: 6px; height: 54px; font-size: 17px; }

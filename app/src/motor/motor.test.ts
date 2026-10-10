@@ -82,20 +82,23 @@ describe('prêmios', () => {
 describe('roleta', () => {
   const a23 = TRINCAS.find(j => j.slots.join() === cartas('A♥ 2♥ 3♥').join())!.id;
   it('trinca sorteada sem coringa vale', () => {
-    expect(nomes(calc('A♥ 2♥ 3♥ 5♠ 5♥ 5♣ 9♦ 10♦ J♦', '7♣', { trincas: [a23], quadra: null }))).toEqual(['Batida de 9:10', 'Trinca da roleta:60']);
+    expect(nomes(calc('A♥ 2♥ 3♥ 5♠ 5♥ 5♣ 9♦ 10♦ J♦', '7♣', { trincas: [a23], quadra: null }))).toEqual(['Batida de 9:10', 'Trinca da roleta:10']);
   });
   it('com coringa não vale', () => {
     // vira 2♦: 3♦ é coringa no lugar do 2♥
     expect(nomes(calc('A♥ 3♦ 3♥ 5♠ 5♥ 5♣ 9♦ 10♦ J♦', '2♦', { trincas: [a23], quadra: null }))).toEqual(['Batida de 9:10']);
   });
-  it('quadra sorteada: qualquer quadra do valor, sem coringa', () => {
-    const r = calc('9♠ 9♠ 9♥ 9♦ 5♠ 6♠ 7♠ 2♦ 3♦ 4♦', 'J♣', { trincas: [], quadra: { valor: 9 } });
-    expect(nomes(r)).toEqual(['Batida de 10:20', 'Quadra da roleta:60']);
-    const s = calc('9♣ 9♣ 9♥ 9♦ 5♠ 6♠ 7♠ 2♦ 3♦ 4♦', 'J♠', { trincas: [], quadra: { valor: 9 } });
-    expect(nomes(s)).toEqual(['Batida de 10:20', 'Quadra da roleta:60']);
-    // vira 8♥: 9♥ e 9♦ são coringas, mas aqui estão no próprio lugar
-    const t = calc('9♠ 9♠ 9♥ 9♦ 5♠ 6♠ 7♠ 2♦ 3♦ 4♦', '8♥', { trincas: [], quadra: { valor: 9 } });
-    expect(nomes(t)).toEqual(['Batida de 10:20', 'Quadra da roleta:60']);
+  const dobra = (txt: string) => DOBRAS.find(d => [...d.slots].sort().join() === [...cartas(txt)].sort().join())!.id;
+  it('quadra sorteada: só as 4 cartas exatas, sem coringa', () => {
+    const q = dobra('9♠ 9♠ 9♥ 9♦');
+    expect(nomes(calc('9♠ 9♠ 9♥ 9♦ 5♠ 6♠ 7♠ 2♦ 3♦ 4♦', 'J♣', { trincas: [], quadra: q }))).toEqual(['Batida de 10:20', 'Quadra da roleta:20']);
+    // outra quadra de 9 não vale
+    expect(nomes(calc('9♣ 9♣ 9♥ 9♦ 5♠ 6♠ 7♠ 2♦ 3♦ 4♦', 'J♠', { trincas: [], quadra: q }))).toEqual(['Batida de 10:20']);
+    // sequência de 4 sorteada
+    const s = dobra('4♥ 5♥ 6♥ 7♥');
+    expect(nomes(calc('4♥ 5♥ 6♥ 7♥ 5♠ 6♠ 7♠ 2♦ 3♦ 4♦', 'J♣', { trincas: [], quadra: s }))).toEqual(['Batida de 10:20', 'Quadra da roleta:20']);
+    // vira 6♠: 7♠ é coringa no lugar do 7♥, não vale
+    expect(nomes(calc('4♥ 5♥ 6♥ 7♠ 5♣ 6♣ 7♣ 2♦ 3♦ 4♦', '6♠', { trincas: [], quadra: s }))).toEqual(['Batida de 10:20']);
   });
 });
 

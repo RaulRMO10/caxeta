@@ -1,5 +1,5 @@
 import { Carta } from '../motor/cartas';
-import { ConfigPontos, LinhaConta, Roleta, sortearRoleta } from '../motor/premios';
+import { CONFIG_PADRAO, ConfigPontos, LinhaConta, Roleta, sortearRoleta } from '../motor/premios';
 
 export interface Jogador {
   id: string;
@@ -170,11 +170,27 @@ export function reduzir(p: Partida | null, a: Acao): Partida | null {
 const CHAVE = 'caxeta.partida.v1';
 const CHAVE_DESFAZER = 'caxeta.desfazer.v1';
 
+// Partidas salvas quando a quadra da roleta era só um valor: sorteia de novo e usa o bônus novo.
+function atualizar(p: Partida): Partida {
+  const antiga = (r: Roleta) => typeof (r.quadra as unknown) === 'object' && r.quadra !== null;
+  if (!antiga(p.rodada.roleta)) return p;
+  const config = { ...p.config, roleta: { ...p.config.roleta, pontosTrinca: CONFIG_PADRAO.roleta.pontosTrinca, pontosQuadra: CONFIG_PADRAO.roleta.pontosQuadra } };
+  return {
+    ...p,
+    config,
+    rodada: { ...p.rodada, roleta: novaRoleta(config) },
+    historico: p.historico.map(h => (antiga(h.roleta) ? { ...h, roleta: { ...h.roleta, quadra: null } } : h)),
+  };
+}
+
 export function carregar(): { partida: Partida | null; desfazer: Partida[] } {
   try {
     const p = localStorage.getItem(CHAVE);
     const d = localStorage.getItem(CHAVE_DESFAZER);
-    return { partida: p ? JSON.parse(p) : null, desfazer: d ? JSON.parse(d) : [] };
+    return {
+      partida: p ? atualizar(JSON.parse(p)) : null,
+      desfazer: d ? (JSON.parse(d) as Partida[]).map(atualizar) : [],
+    };
   } catch {
     return { partida: null, desfazer: [] };
   }

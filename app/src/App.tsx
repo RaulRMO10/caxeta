@@ -162,7 +162,7 @@ export default function App() {
 
       {mostrarRoleta && (
         <RoletaGirando key={`${p.rodada.numero}-${roletaVista}`} roleta={p.rodada.roleta} numero={p.rodada.numero}
-          valorTrinca={valorTrincaRoleta(p.config, n)} valorQuadra={valorQuadraRoleta(p.config, n)}
+          valorTrinca={valorTrincaRoleta(p.config)} valorQuadra={valorQuadraRoleta(p.config)}
           aoTerminar={() => setRoletaVista(p.rodada.numero)} />
       )}
 

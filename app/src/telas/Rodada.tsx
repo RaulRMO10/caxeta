@@ -46,7 +46,6 @@ export function TelaRodada({ p, despachar, aoBater, aoRoleta }: {
   const f = funcoes(p);
   const vira = p.rodada.vira;
   const ctx = vira !== null ? contextoDaVira(vira) : null;
-  const n = vivos(p).length;
 
   return (
     <div className="tela tela-rodada">
@@ -87,7 +86,7 @@ export function TelaRodada({ p, despachar, aoBater, aoRoleta }: {
         )}
       </section>
 
-      <RoletaResumo roleta={p.rodada.roleta} valorTrinca={valorTrincaRoleta(p.config, n)} valorQuadra={valorQuadraRoleta(p.config, n)}
+      <RoletaResumo roleta={p.rodada.roleta} valorTrinca={valorTrincaRoleta(p.config)} valorQuadra={valorQuadraRoleta(p.config)}
         ehCoringa={ctx?.ehCoringa} aoRever={aoRoleta} />
 
       {p.rodada.queimados.length > 0 && (
