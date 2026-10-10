@@ -22,9 +22,9 @@ export function Chave({ ligada, aoMudar, rotulo }: { ligada: boolean; aoMudar: (
   );
 }
 
-function Linha({ rotulo, ajuda, children, cor }: { rotulo: ReactNode; ajuda?: ReactNode; children: ReactNode; cor?: string }) {
+function Linha({ rotulo, ajuda, children, cor, semBorda }: { rotulo: ReactNode; ajuda?: ReactNode; children: ReactNode; cor?: string; semBorda?: boolean }) {
   return (
-    <div className="ajuste-linha">
+    <div className={`ajuste-linha ${semBorda ? 'sem-borda' : ''}`}>
       <div className="ajuste-rotulo">
         {cor && <span className="ponto-nivel" style={{ background: cor }} />}
         <div><span>{rotulo}</span>{ajuda && <small>{ajuda}</small>}</div>
@@ -54,11 +54,25 @@ export function EditorPontos({ cfg, aoMudar, jogadores }: { cfg: ConfigPontos; a
       {PREMIOS.map(p => {
         const atual = cfg.premios[p.id];
         const setar = (parte: Partial<typeof atual>) => mudar({ premios: { ...cfg.premios, [p.id]: { ...atual, ...parte } } });
+        const ajuda = p.ganha10 ? 'na batida de 10 ganha a partida' : p.pontos10 === null ? 'só na batida de 9' : undefined;
         return (
-          <Linha key={p.id} rotulo={p.nome} cor={NIVEIS[p.nivel].cor} ajuda={p.nivel === 'lenda' ? 'ganha a partida' : undefined}>
-            {p.nivel !== 'lenda' && atual.ativo && <Passo valor={atual.pontos} aoMudar={v => setar({ pontos: v })} />}
-            <Chave rotulo={p.nome} ligada={atual.ativo} aoMudar={v => setar({ ativo: v })} />
-          </Linha>
+          <div key={p.id} className="ajuste-premio">
+            <Linha rotulo={p.nome} cor={NIVEIS[p.nivel].cor} ajuda={ajuda} semBorda>
+              <Chave rotulo={p.nome} ligada={atual.ativo} aoMudar={v => setar({ ativo: v })} />
+            </Linha>
+            {atual.ativo && (
+              <div className="ajuste-premio-valores">
+                <span>de 9</span>
+                <Passo valor={atual.pontos9} aoMudar={v => setar({ pontos9: v })} />
+                {p.pontos10 !== null && (
+                  <>
+                    <span>de 10</span>
+                    <Passo valor={atual.pontos10} aoMudar={v => setar({ pontos10: v })} />
+                  </>
+                )}
+              </div>
+            )}
+          </div>
         );
       })}
 

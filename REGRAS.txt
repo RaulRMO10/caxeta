@@ -144,37 +144,50 @@ Exemplo (4 jogadores: A, B, C e D, sem prêmios)
 
 8. PRÊMIOS
 ------------------------------
-Os valores saíram de uma simulação com milhões de mãos (pasta simulacao/):
-quanto mais difícil, mais vale. São para uma mesa de 4 jogadores; o app
-ajusta pelo tamanho da mesa (2 jogadores x0,5 · 3 x0,75 · 4 x1 · 5 x1,15 ·
+A ordem dos prêmios saiu de uma simulação com milhões de mãos (pasta
+simulacao/): quanto mais difícil, mais vale. Os valores foram mantidos
+baixos para que só a Lenda decida a partida sozinha. São para uma mesa de
+4 jogadores; o app ajusta pelo tamanho da mesa (2 jogadores x0,5 · 3 x0,75 · 4 x1 · 5 x1,15 ·
 6 x1,35 · 7 x1,45 · 8 x1,5).
 
-BRONZE (40)
-- Cor única: a batida inteira em sequências de uma cor só (♥♦ ou ♠♣).
-- Figuras: a batida inteira só com J, Q, K e Ás.
+Na batida de 10 o prêmio vale 50% a mais, porque é mais difícil
+(e a batida de 10 já vale o dobro da de 9).
 
-PRATA (60)
-- Escada colorida: 9 valores seguidos (10 na batida de 10), em
-  sequências de qualquer pinta.
-- Uma pinta só: a batida inteira em sequências da mesma pinta.
+                                       batida de 9   batida de 10
+BRONZE
+- Cor única: a batida inteira em           10            15
+  sequências de uma cor só (♥♦ ou ♠♣).
+- Figuras: a batida inteira só com         10            15
+  J, Q, K e Ás.
 
-OURO (80)
-- Gêmeas: dois jogos idênticos, carta por carta.
-- Escadão colorido: do Ás até o 9 (até o 10 na batida de 10), com as
-  pintas misturadas.
+PRATA
+- Escada colorida: 9 valores seguidos      20            30
+  (10 na de 10), em sequências de
+  qualquer pinta.
+- Uma pinta só: a batida inteira em        20            30
+  sequências da mesma pinta.
 
-DIAMANTE (120)
-- Bandeira: três sequências com os mesmos valores em três pintas
+OURO
+- Gêmeas: dois jogos idênticos, carta      30            45
+  por carta.
+- Escadão colorido: do Ás até o 9 (até     30            45
+  o 10 na de 10), pintas misturadas.
+
+DIAMANTE
+- Bandeira: três sequências com os         40            (não existe)
+  mesmos valores em três pintas
   diferentes. Ex.: 4♥ 5♥ 6♥ 4♠ 5♠ 6♠ 4♦ 5♦ 6♦
-- Escada: 9 cartas seguidas da mesma pinta (10 na batida de 10).
+- Escada: 9 cartas seguidas da mesma       40            60
+  pinta (10 na de 10).
 
-LENDA (ganha a partida)
-- Escadão: do Ás até o 9 da mesma pinta.
+LENDA
+- Escadão: do Ás até o 9 da mesma          60            GANHA A PARTIDA
+  pinta (do Ás até o 10 na de 10).
 
 COMO OS PRÊMIOS CONTAM
 - Prêmios somam. Quando um está dentro do outro (toda Escada também é
   Uma pinta só), vale só o maior.
-- Cada coringa ou Joker usado no lugar de outra carta tira 10 pontos de
+- Cada coringa ou Joker usado no lugar de outra carta tira 5 pontos de
   cada prêmio. Coringa no lugar dele mesmo não conta.
 
 ROLETA (bônus sorteado a cada rodada pelo app)

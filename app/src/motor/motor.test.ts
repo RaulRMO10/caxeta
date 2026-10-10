@@ -52,30 +52,34 @@ describe('batida', () => {
 
 describe('prêmios', () => {
   it('escadas e hierarquia', () => {
-    expect(nomes(calc('3♥ 4♥ 5♥ 6♠ 7♠ 8♠ 9♦ 10♦ J♦', 'K♣'))).toEqual(['Batida de 9:10', 'Escada colorida:60']);
-    expect(nomes(calc('A♥ 2♥ 3♥ 4♥ 5♠ 6♠ 7♠ 8♦ 9♦ 10♦', 'K♣'))).toEqual(['Batida de 10:20', 'Escadão colorido:80']);
-    expect(nomes(calc('3♣ 4♣ 5♣ 6♣ 7♣ 8♣ 9♣ 10♣ J♣', 'K♥'))).toEqual(['Batida de 9:10', 'Escada:120']);
-    const lenda = calc('A♠ 2♠ 3♠ 4♠ 5♠ 6♠ 7♠ 8♠ 9♠', 'J♥')!;
-    expect(lenda.ganhaPartida).toBe(true);
+    expect(nomes(calc('3♥ 4♥ 5♥ 6♠ 7♠ 8♠ 9♦ 10♦ J♦', 'K♣'))).toEqual(['Batida de 9:10', 'Escada colorida:20']);
+    expect(nomes(calc('A♥ 2♥ 3♥ 4♥ 5♠ 6♠ 7♠ 8♦ 9♦ 10♦', 'K♣'))).toEqual(['Batida de 10:20', 'Escadão colorido:45']);
+    expect(nomes(calc('3♣ 4♣ 5♣ 6♣ 7♣ 8♣ 9♣ 10♣ J♣', 'K♥'))).toEqual(['Batida de 9:10', 'Escada:40']);
+    // na batida de 10 o mesmo prêmio vale mais
+    expect(nomes(calc('3♣ 4♣ 5♣ 6♣ 7♣ 8♣ 9♣ 10♣ J♣ Q♣', 'K♥'))).toEqual(['Batida de 10:20', 'Escada:60']);
+    // Escadão: na de 9 vale pontos, na de 10 ganha a partida
+    expect(nomes(calc('A♠ 2♠ 3♠ 4♠ 5♠ 6♠ 7♠ 8♠ 9♠', 'J♥'))).toEqual(['Batida de 9:10', 'Escadão:60']);
+    expect(calc('A♠ 2♠ 3♠ 4♠ 5♠ 6♠ 7♠ 8♠ 9♠', 'J♥')!.ganhaPartida).toBe(false);
+    expect(calc('A♠ 2♠ 3♠ 4♠ 5♠ 6♠ 7♠ 8♠ 9♠ 10♠', 'J♥')!.ganhaPartida).toBe(true);
   });
-  it('coringa desconta 10 de cada prêmio', () => {
+  it('coringa desconta 5 de cada prêmio', () => {
     // vira J♥: Q♥ é coringa no lugar do 5♠
-    expect(nomes(calc('3♠ 4♠ Q♥ 6♠ 7♠ 8♠ 9♠ 10♠ J♠', 'J♥'))).toEqual(['Batida de 9:10', 'Escada:110']);
+    expect(nomes(calc('3♠ 4♠ Q♥ 6♠ 7♠ 8♠ 9♠ 10♠ J♠', 'J♥'))).toEqual(['Batida de 9:10', 'Escada:35']);
   });
   it('coringa no lugar dele mesmo não desconta', () => {
     // vira 4♠: 5♠ é coringa, mas entra como 5♠
-    expect(nomes(calc('3♠ 4♠ 5♠ 6♠ 7♠ 8♠ 9♠ 10♠ J♠', '4♣'))).toEqual(['Batida de 9:10', 'Escada:120']);
+    expect(nomes(calc('3♠ 4♠ 5♠ 6♠ 7♠ 8♠ 9♠ 10♠ J♠', '4♣'))).toEqual(['Batida de 9:10', 'Escada:40']);
   });
   it('outros prêmios', () => {
-    expect(nomes(calc('2♥ 3♥ 4♥ 7♦ 8♦ 9♦ J♥ Q♥ K♥', '5♠'))).toEqual(['Batida de 9:10', 'Cor única:40']);
-    expect(nomes(calc('2♣ 3♣ 4♣ 7♣ 8♣ 9♣ J♣ Q♣ K♣', '5♥'))).toEqual(['Batida de 9:10', 'Uma pinta só:60']);
-    expect(nomes(calc('7♣ 8♣ 9♣ 7♣ 8♣ 9♣ 5♠ 5♥ 5♦', 'J♥'))).toEqual(['Batida de 9:10', 'Gêmeas:80']);
-    expect(nomes(calc('4♥ 5♥ 6♥ 4♠ 5♠ 6♠ 4♦ 5♦ 6♦', 'J♣'))).toContain('Bandeira:120');
-    expect(nomes(calc('J♥ Q♥ K♥ A♠ A♣ A♦ Q♦ K♦ A♦', '5♠'))).toEqual(['Batida de 9:10', 'Figuras:40']);
+    expect(nomes(calc('2♥ 3♥ 4♥ 7♦ 8♦ 9♦ J♥ Q♥ K♥', '5♠'))).toEqual(['Batida de 9:10', 'Cor única:10']);
+    expect(nomes(calc('2♣ 3♣ 4♣ 7♣ 8♣ 9♣ J♣ Q♣ K♣', '5♥'))).toEqual(['Batida de 9:10', 'Uma pinta só:20']);
+    expect(nomes(calc('7♣ 8♣ 9♣ 7♣ 8♣ 9♣ 5♠ 5♥ 5♦', 'J♥'))).toEqual(['Batida de 9:10', 'Gêmeas:30']);
+    expect(nomes(calc('4♥ 5♥ 6♥ 4♠ 5♠ 6♠ 4♦ 5♦ 6♦', 'J♣'))).toContain('Bandeira:40');
+    expect(nomes(calc('J♥ Q♥ K♥ A♠ A♣ A♦ Q♦ K♦ A♦', '5♠'))).toEqual(['Batida de 9:10', 'Figuras:10']);
   });
   it('ajuste pelo tamanho da mesa', () => {
-    expect(nomes(calc('3♥ 4♥ 5♥ 6♠ 7♠ 8♠ 9♦ 10♦ J♦', 'K♣', semRoleta, 2))).toEqual(['Batida de 9:10', 'Escada colorida:30']);
-    expect(nomes(calc('3♥ 4♥ 5♥ 6♠ 7♠ 8♠ 9♦ 10♦ J♦', 'K♣', semRoleta, 6))).toEqual(['Batida de 9:10', 'Escada colorida:80']);
+    expect(nomes(calc('3♥ 4♥ 5♥ 6♠ 7♠ 8♠ 9♦ 10♦ J♦', 'K♣', semRoleta, 2))).toEqual(['Batida de 9:10', 'Escada colorida:10']);
+    expect(nomes(calc('3♥ 4♥ 5♥ 6♠ 7♠ 8♠ 9♦ 10♦ J♦', 'K♣', semRoleta, 6))).toEqual(['Batida de 9:10', 'Escada colorida:25']);
   });
 });
 
@@ -202,6 +206,6 @@ describe('mão marcada por jogo', () => {
     // marcadas como 3 trincas de iguais (sem prêmio), mas as mesmas cartas fazem a Bandeira
     const r = calcularBatida(cartas('4♥ 4♠ 4♦ 5♥ 5♠ 5♦ 6♥ 6♠ 6♦'), ctx('J♣'), semRoleta, CONFIG_PADRAO, 4, g('4♥ 4♠ 4♦', '5♥ 5♠ 5♦', '6♥ 6♠ 6♦'))!;
     expect(r.arrumacao).toBe('melhor');
-    expect(nomes(r)).toContain('Bandeira:120');
+    expect(nomes(r)).toContain('Bandeira:40');
   });
 });

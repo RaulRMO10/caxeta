@@ -20,7 +20,10 @@ export interface DefPremio {
   id: PremioId;
   nome: string;
   nivel: Nivel;
-  pontos: number; // padrão, numa mesa de 4 (0 = ganha a partida)
+  // padrão numa mesa de 4. Na batida de 10 o prêmio vale 50% a mais, porque é mais difícil.
+  pontos9: number;
+  pontos10: number | null; // null = não existe na batida de 10
+  ganha10?: boolean; // na batida de 10, ganha a partida
   descricao: string;
   exemplo: string;
   semQuerer: number; // sai sem ninguém procurar em 1 a cada X batidas (simulação, mesa de 4)
@@ -28,32 +31,32 @@ export interface DefPremio {
 }
 
 export const PREMIOS: DefPremio[] = [
-  { id: 'cor_unica', nome: 'Cor única', nivel: 'bronze', pontos: 40, semQuerer: 32,
+  { id: 'cor_unica', nome: 'Cor única', nivel: 'bronze', pontos9: 10, pontos10: 15, semQuerer: 32,
     descricao: 'A batida inteira em sequências de uma cor só: só vermelhas (♥ ♦) ou só pretas (♠ ♣).',
     exemplo: '2♥ 3♥ 4♥ 7♦ 8♦ 9♦ J♥ Q♥ K♥', contidoEm: ['uma_pinta', 'escada', 'escadao'] },
-  { id: 'figuras', nome: 'Figuras', nivel: 'bronze', pontos: 40, semQuerer: 180,
+  { id: 'figuras', nome: 'Figuras', nivel: 'bronze', pontos9: 10, pontos10: 15, semQuerer: 180,
     descricao: 'A batida inteira só com J, Q, K e Ás.',
     exemplo: 'J♥ Q♥ K♥ A♠ A♣ A♦ Q♦ K♦ A♦', contidoEm: [] },
-  { id: 'escada_colorida', nome: 'Escada colorida', nivel: 'prata', pontos: 60, semQuerer: 140,
+  { id: 'escada_colorida', nome: 'Escada colorida', nivel: 'prata', pontos9: 20, pontos10: 30, semQuerer: 140,
     descricao: '9 valores seguidos (10 na batida de 10), em sequências de qualquer pinta.',
     exemplo: '3♥ 4♥ 5♥ 6♠ 7♠ 8♠ 9♦ 10♦ J♦', contidoEm: ['escadao_colorido', 'escada', 'escadao'] },
-  { id: 'uma_pinta', nome: 'Uma pinta só', nivel: 'prata', pontos: 60, semQuerer: 290,
+  { id: 'uma_pinta', nome: 'Uma pinta só', nivel: 'prata', pontos9: 20, pontos10: 30, semQuerer: 290,
     descricao: 'A batida inteira em sequências da mesma pinta.',
     exemplo: '2♣ 3♣ 4♣ 7♣ 8♣ 9♣ J♣ Q♣ K♣', contidoEm: ['escada', 'escadao'] },
-  { id: 'gemeas', nome: 'Gêmeas', nivel: 'ouro', pontos: 80, semQuerer: 370,
+  { id: 'gemeas', nome: 'Gêmeas', nivel: 'ouro', pontos9: 30, pontos10: 45, semQuerer: 370,
     descricao: 'Dois jogos idênticos, carta por carta (só dá porque são dois baralhos).',
     exemplo: '7♣ 8♣ 9♣ 7♣ 8♣ 9♣ 5♠ 5♥ 5♦', contidoEm: [] },
-  { id: 'escadao_colorido', nome: 'Escadão colorido', nivel: 'ouro', pontos: 80, semQuerer: 830,
+  { id: 'escadao_colorido', nome: 'Escadão colorido', nivel: 'ouro', pontos9: 30, pontos10: 45, semQuerer: 830,
     descricao: 'Do Ás até o 9 (até o 10 na batida de 10), com as pintas misturadas.',
     exemplo: 'A♥ 2♥ 3♥ 4♠ 5♠ 6♠ 7♦ 8♦ 9♦', contidoEm: ['escadao'] },
-  { id: 'bandeira', nome: 'Bandeira', nivel: 'diamante', pontos: 120, semQuerer: 2000,
-    descricao: 'Três sequências com os mesmos valores, em três pintas diferentes.',
+  { id: 'bandeira', nome: 'Bandeira', nivel: 'diamante', pontos9: 40, pontos10: null, semQuerer: 2000,
+    descricao: 'Três sequências com os mesmos valores, em três pintas diferentes (só na batida de 9).',
     exemplo: '4♥ 5♥ 6♥ 4♠ 5♠ 6♠ 4♦ 5♦ 6♦', contidoEm: [] },
-  { id: 'escada', nome: 'Escada', nivel: 'diamante', pontos: 120, semQuerer: 3300,
+  { id: 'escada', nome: 'Escada', nivel: 'diamante', pontos9: 40, pontos10: 60, semQuerer: 3300,
     descricao: '9 cartas seguidas da mesma pinta (10 na batida de 10).',
     exemplo: '3♠ 4♠ 5♠ 6♠ 7♠ 8♠ 9♠ 10♠ J♠', contidoEm: ['escadao'] },
-  { id: 'escadao', nome: 'Escadão', nivel: 'lenda', pontos: 0, semQuerer: 25000,
-    descricao: 'Do Ás até o 9 da mesma pinta. Ganha a partida na hora.',
+  { id: 'escadao', nome: 'Escadão', nivel: 'lenda', pontos9: 60, pontos10: null, ganha10: true, semQuerer: 25000,
+    descricao: 'Do Ás até o 9 da mesma pinta. Na batida de 10 (do Ás até o 10), ganha a partida na hora.',
     exemplo: 'A♠ 2♠ 3♠ 4♠ 5♠ 6♠ 7♠ 8♠ 9♠', contidoEm: [] },
 ];
 
@@ -99,7 +102,7 @@ export interface ConfigPontos {
   base10: number;
   desconto: number; // pontos tirados de cada prêmio fixo por coringa/Joker usado
   ajusteMesa: boolean;
-  premios: Record<PremioId, { ativo: boolean; pontos: number }>;
+  premios: Record<PremioId, { ativo: boolean; pontos9: number; pontos10: number }>;
   roleta: { trincas: number; pontosTrinca: number; quadra: boolean; pontosQuadra: number };
 }
 
@@ -107,9 +110,9 @@ export const CONFIG_PADRAO: ConfigPontos = {
   meio: 100,
   base9: 10,
   base10: 20,
-  desconto: 10,
+  desconto: 5,
   ajusteMesa: true,
-  premios: Object.fromEntries(PREMIOS.map(p => [p.id, { ativo: true, pontos: p.pontos }])) as ConfigPontos['premios'],
+  premios: Object.fromEntries(PREMIOS.map(p => [p.id, { ativo: true, pontos9: p.pontos9, pontos10: p.pontos10 ?? 0 }])) as ConfigPontos['premios'],
   roleta: { trincas: 3, pontosTrinca: 10, quadra: true, pontosQuadra: 20 },
 };
 
@@ -122,8 +125,8 @@ export const multiplicador = (cfg: ConfigPontos, jogadores: number) =>
 
 export const arred5 = (x: number) => Math.round(x / 5) * 5;
 
-export const valorPremio = (cfg: ConfigPontos, id: PremioId, jogadores: number) =>
-  arred5(cfg.premios[id].pontos * multiplicador(cfg, jogadores));
+export const valorPremio = (cfg: ConfigPontos, id: PremioId, jogadores: number, tam: 9 | 10) =>
+  arred5((tam === 10 ? cfg.premios[id].pontos10 : cfg.premios[id].pontos9) * multiplicador(cfg, jogadores));
 
 // A roleta é um bônus fixo para movimentar a partida: não muda com o tamanho da mesa.
 export const valorTrincaRoleta = (cfg: ConfigPontos) => cfg.roleta.pontosTrinca;
@@ -191,12 +194,13 @@ function avaliar(arr: Arranjo, mao: Carta[], ctx: Contexto, roleta: Roleta, cfg:
   const premios = premiosFixos(arr.jogos, tam).filter(p => cfg.premios[p].ativo);
   for (const p of premios) {
     const def = PREMIO[p];
-    if (def.nivel === 'lenda') {
+    if (tam === 10 && def.ganha10) {
       ganha = true;
       linhas.push({ rotulo: def.nome, pontos: 0, nivel: def.nivel, ganha: true, detalhe: 'ganha a partida' });
       continue;
     }
-    const cheio = valorPremio(cfg, p, jogadores);
+    if (tam === 10 && def.pontos10 === null) continue;
+    const cheio = valorPremio(cfg, p, jogadores, tam);
     const desconto = cfg.desconto * arr.substitutos;
     linhas.push({
       rotulo: def.nome, nivel: def.nivel, pontos: Math.max(0, cheio - desconto),

@@ -119,11 +119,12 @@ export const REGRAS: Secao[] = [
 export const DUVIDAS: [string, string][] = [
   ['O app escolhe a vira?', 'Não. As cartas e a vira são de verdade, na mesa. Você só informa no app qual carta virou, e ele mostra os coringas.'],
   ['Preciso marcar a mão toda vez?', 'Não. Se a batida não tem prêmio, é só escolher "sem prêmio" e registrar. Marque a mão quando alguém tiver prêmio, para o app conferir e somar.'],
-  ['Prêmio feito com coringa vale?', 'Os prêmios fixos valem, mas cada coringa ou Joker usado no lugar de outra carta tira 10 pontos de cada prêmio. As trincas e a quadra da roleta só valem sem coringa.'],
+  ['Prêmio feito com coringa vale?', 'Os prêmios fixos valem, mas cada coringa ou Joker usado no lugar de outra carta tira 5 pontos de cada prêmio. As trincas e a quadra da roleta só valem sem coringa.'],
   ['E coringa no lugar dele mesmo?', 'Não desconta. Se o 7♥ é coringa e entra como 7♥ mesmo, conta como carta normal.'],
+  ['O prêmio vale o mesmo na batida de 9 e na de 10?', 'Não. Bater de 10 é mais difícil, então o prêmio vale 50% a mais (e a batida já vale o dobro). O Escadão de 10, do Ás até o 10, ganha a partida.'],
   ['Dá para ganhar dois prêmios na mesma batida?', 'Dá, e eles somam. Só quando um prêmio está dentro do outro (toda Escada também é Uma pinta só, por exemplo) vale só o maior.'],
   ['Por que o prêmio muda com o número de jogadores?', 'Com mais gente na mesa, é mais difícil completar um prêmio antes de alguém bater. A simulação mediu isso: com 2 jogadores o prêmio vale metade, com 6 vale uns 35% a mais. Dá para desligar nos ajustes.'],
-  ['De onde vieram os valores dos prêmios?', 'De uma simulação com milhões de mãos: para cada prêmio, a mesma mão foi jogada correndo atrás dele e jogando seguro. O valor é o que faz a aposta valer a pena.'],
+  ['De onde vieram os valores dos prêmios?', 'A ordem saiu de uma simulação com milhões de mãos: para cada prêmio, a mesma mão foi jogada correndo atrás dele e jogando seguro, para medir o quanto ele é difícil. Os valores foram mantidos baixos para que só a Lenda decida a partida sozinha, então correr atrás de prêmio compensa mais quando a mão já ajuda.'],
   ['Como funciona a roleta?', 'Assim que você informa a vira, o app sorteia 3 trincas e 1 quadra exatas, sem nenhuma carta que seja coringa naquela rodada. É um bônus para movimentar a partida: quem bater com uma delas feita sem coringa ganha +10 por trinca e +20 pela quadra (a quadra só entra na batida de 10). O bônus não muda com o tamanho da mesa.'],
   ['Errei a rodada, e agora?', 'No Placar tem "Desfazer última rodada". Também dá para ajustar os pontos de alguém na mão.'],
 ];

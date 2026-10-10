@@ -25,6 +25,7 @@ export function TelaPremios({ cfg = CONFIG_PADRAO, jogadores = 4 }: { cfg?: Conf
         <h3>Como funciona</h3>
         <ul className="lista">
           <li>A batida vale <b>{cfg.base9}</b> (de 9) ou <b>{cfg.base10}</b> (de 10), mais os prêmios.</li>
+          <li>Na batida de 10 o prêmio vale 50% a mais, porque é mais difícil.</li>
           <li>Prêmios somam. Se um está dentro do outro (toda Escada é também Uma pinta só), vale só o maior.</li>
           <li>Cada coringa ou Joker no lugar de outra carta tira <b>{cfg.desconto}</b> de cada prêmio. Coringa no próprio lugar não conta.</li>
           <li>Valores para <b>{jogadores} jogadores</b>{cfg.ajusteMesa && mult !== 1 ? <> (×{mult.toLocaleString('pt-BR')} pelo tamanho da mesa)</> : null}.</li>
@@ -63,7 +64,12 @@ export function TelaPremios({ cfg = CONFIG_PADRAO, jogadores = 4 }: { cfg?: Conf
               <section key={p.id} className={`painel premio-cartao nivel-${nivel}`} style={{ '--cor': NIVEIS[nivel].cor } as CSSProperties}>
                 <header className="premio-topo">
                   <h3>{p.nome}</h3>
-                  <span className="premio-valor">{nivel === 'lenda' ? 'ganha a partida' : `+${valorPremio(cfg, p.id, jogadores)}`}</span>
+                  <span className="premio-valores">
+                    <span className="premio-valor"><small>de 9</small>+{valorPremio(cfg, p.id, jogadores, 9)}</span>
+                    {p.ganha10
+                      ? <span className="premio-valor"><small>de 10</small>ganha</span>
+                      : p.pontos10 !== null && <span className="premio-valor"><small>de 10</small>+{valorPremio(cfg, p.id, jogadores, 10)}</span>}
+                  </span>
                 </header>
                 <p><ComNaipes>{p.descricao}</ComNaipes></p>
                 <Exemplo txt={p.exemplo} />

@@ -183,6 +183,12 @@ function atualizar(p: Partida): Partida {
   const antiga = (r: Roleta) => typeof (r.quadra as unknown) === 'object' && r.quadra !== null;
   const normal = (r: Roleta): Roleta => ({ trincas: r.trincas, quadra: antiga(r) ? null : r.quadra, sorteio: r.sorteio ?? 1 });
   let config = p.config;
+  const premiosAntigos = Object.values(config.premios).some(x => (x as { pontos9?: number }).pontos9 === undefined);
+  if (premiosAntigos) {
+    const premios = Object.fromEntries(Object.entries(CONFIG_PADRAO.premios).map(([id, padrao]) =>
+      [id, { ...padrao, ativo: config.premios[id as keyof typeof config.premios]?.ativo ?? true }])) as ConfigPontos['premios'];
+    config = { ...config, premios, desconto: CONFIG_PADRAO.desconto };
+  }
   if (antiga(p.rodada.roleta))
     config = { ...config, roleta: { ...config.roleta, pontosTrinca: CONFIG_PADRAO.roleta.pontosTrinca, pontosQuadra: CONFIG_PADRAO.roleta.pontosQuadra } };
   let roleta = normal(p.rodada.roleta);
