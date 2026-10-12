@@ -12,7 +12,10 @@ export function ResultadoBatida({ p, r, aoSeguir }: { p: Partida; r: Registro; a
   const v = jogador(p, r.vencedorId);
   const premios = r.linhas.filter(l => l.nivel);
   const maior = premios.reduce<Nivel | null>((m, l) => (!m || ORDEM_NIVEL.indexOf(l.nivel!) > ORDEM_NIVEL.indexOf(m) ? l.nivel! : m), null);
-  const total = useContador(r.total, 900);
+  // no fim da subida o meio pode ter menos que a batida: puxa o que tinha e o resto desce
+  const puxou = r.efeitos.find(e => e.jogadorId === r.vencedorId)?.delta ?? 0;
+  const parcial = puxou > 0 && puxou < r.total;
+  const total = useContador(parcial ? puxou : r.total, 900);
   const cor = maior ? NIVEIS[maior].cor : 'var(--ouro)';
   const perdas = r.efeitos.filter(e => e.delta < 0 || e.saiu);
   return (
@@ -24,6 +27,7 @@ export function ResultadoBatida({ p, r, aoSeguir }: { p: Partida; r: Registro; a
         <h2>{v.nome} bateu!</h2>
         <p className="resultado-sub">batida de {r.tam}</p>
         <div className="resultado-total">+{total}</div>
+        {parcial && <p className="resultado-sub">valia {r.total}: puxou {puxou} do meio e {r.total - puxou} desceu de cada um</p>}
         {premios.length > 0 && (
           <div className="resultado-premios">
             {premios.map((l, i) => (

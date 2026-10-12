@@ -62,6 +62,9 @@ export function TelaPlacar({ p, despachar, podeDesfazer, aoDesfazer, aoEncerrar 
           const v = jogador(p, r.vencedorId);
           const premios = r.linhas.filter(l => l.nivel);
           const saiu = r.efeitos.filter(e => e.saiu);
+          // o que o vencedor puxou de fato (no fim da subida o meio pode ter menos que a batida)
+          const puxou = r.efeitos.find(e => e.jogadorId === r.vencedorId)?.delta ?? 0;
+          const desceu = r.efeitos.filter(e => e.delta < 0);
           const abrir = aberto === r.numero;
           return (
             <li key={r.numero} className={`historico-item ${abrir ? 'aberto' : ''}`}>
@@ -72,7 +75,7 @@ export function TelaPlacar({ p, despachar, podeDesfazer, aoDesfazer, aoEncerrar 
                   <b>{v.nome}</b> bateu de {r.tam}
                   {premios.length > 0 && <span className="historico-premios">{premios.map((l, i) => <span key={i} className="mini-selo" style={{ '--cor': NIVEIS[l.nivel!].cor } as CSSProperties}>{l.rotulo}</span>)}</span>}
                 </span>
-                <span className="historico-pontos">{r.ganhaPartida ? <Icone nome="coroa" tam={18} /> : `+${r.total}`}</span>
+                <span className="historico-pontos">{r.ganhaPartida ? <Icone nome="coroa" tam={18} /> : puxou > 0 ? `+${puxou}` : `−${r.total} cada`}</span>
               </button>
               {abrir && (
                 <div className="historico-detalhe">
@@ -81,8 +84,9 @@ export function TelaPlacar({ p, despachar, podeDesfazer, aoDesfazer, aoEncerrar 
                   <ul className="conta pequena">
                     {r.linhas.map((l, i) => <li key={i}><span className="conta-rotulo">{l.rotulo}{l.detalhe && <small>{l.detalhe}</small>}</span><span className="conta-pontos">{l.ganha ? 'ganha' : `+${l.pontos}`}</span></li>)}
                   </ul>
-                  {r.efeitos.filter(e => e.delta < 0).length > 0 && (
-                    <p className="nota">Desceu: {r.efeitos.filter(e => e.delta < 0).map(e => `${jogador(p, e.jogadorId).nome} ${e.delta}`).join(' · ')}</p>
+                  {puxou > 0 && puxou < r.total && <p className="nota">Puxou do meio: {v.nome} +{puxou}</p>}
+                  {desceu.length > 0 && (
+                    <p className="nota">Desceu: {desceu.map(e => `${jogador(p, e.jogadorId).nome} −${-e.delta}`).join(' · ')}</p>
                   )}
                   {saiu.length > 0 && <p className="nota">Saiu: {saiu.map(e => jogador(p, e.jogadorId).nome).join(', ')}</p>}
                 </div>
