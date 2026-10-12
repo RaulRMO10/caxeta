@@ -119,7 +119,7 @@ export const REGRAS: Secao[] = [
 export const DUVIDAS: [string, string][] = [
   ['O app escolhe a vira?', 'Não. As cartas e a vira são de verdade, na mesa. Você só informa no app qual carta virou, e ele mostra os coringas.'],
   ['Preciso marcar a mão toda vez?', 'Não. Se a batida não tem prêmio, é só escolher "sem prêmio" e registrar. Marque a mão quando alguém tiver prêmio, para o app conferir e somar.'],
-  ['Prêmio feito com coringa vale?', 'Os prêmios fixos valem, mas cada coringa ou Joker usado no lugar de outra carta tira 5 pontos de cada prêmio. As trincas e a quadra da roleta só valem sem coringa.'],
+  ['Prêmio feito com coringa vale?', 'Os prêmios fixos valem, mas cada coringa usado no lugar de outra carta tira 5 pontos de cada prêmio. O Joker não desconta. As trincas e a quadra da roleta só valem sem coringa.'],
   ['E coringa no lugar dele mesmo?', 'Não desconta. Se o 7♥ é coringa e entra como 7♥ mesmo, conta como carta normal.'],
   ['O prêmio vale o mesmo na batida de 9 e na de 10?', 'Não. Bater de 10 é mais difícil, então o prêmio vale 50% a mais (e a batida já vale o dobro). O Escadão de 10, do Ás até o 10, ganha a partida.'],
   ['Dá para ganhar dois prêmios na mesma batida?', 'Dá, e eles somam. Só quando um prêmio está dentro do outro (toda Escada também é Uma pinta só, por exemplo) vale só o maior.'],

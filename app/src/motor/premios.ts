@@ -100,7 +100,7 @@ export interface ConfigPontos {
   meio: number;
   base9: number;
   base10: number;
-  desconto: number; // pontos tirados de cada prêmio fixo por coringa/Joker usado
+  desconto: number; // pontos tirados de cada prêmio fixo por coringa usado (Joker não desconta)
   ajusteMesa: boolean;
   premios: Record<PremioId, { ativo: boolean; pontos9: number; pontos10: number }>;
   roleta: { trincas: number; pontosTrinca: number; quadra: boolean; pontosQuadra: number };

@@ -57,6 +57,12 @@ describe('prêmios', () => {
     expect(nomes(calc('3♣ 4♣ 5♣ 6♣ 7♣ 8♣ 9♣ 10♣ J♣', 'K♥'))).toEqual(['Batida de 9:10', 'Escada:40']);
     // na batida de 10 o mesmo prêmio vale mais
     expect(nomes(calc('3♣ 4♣ 5♣ 6♣ 7♣ 8♣ 9♣ 10♣ J♣ Q♣', 'K♥'))).toEqual(['Batida de 10:20', 'Escada:60']);
+  });
+  it('Joker não desconta do prêmio, coringa desconta', () => {
+    // vira J♥: Joker vale Q♥ ou Q♦ e entra como ela mesma
+    expect(nomes(calc('Jk Q♠ Q♣ K♠ K♥ K♦ A♠ A♥ A♦', 'J♥'))).toEqual(['Batida de 9:10', 'Figuras:10']);
+    // Q♥ é coringa: no lugar do K♦ desconta
+    expect(nomes(calc('Q♦ Q♠ Q♣ K♠ K♥ Q♥ A♠ A♥ A♦', 'J♥'))).toEqual(['Batida de 9:10', 'Figuras:5']);
     // Escadão: na de 9 vale pontos, na de 10 ganha a partida
     expect(nomes(calc('A♠ 2♠ 3♠ 4♠ 5♠ 6♠ 7♠ 8♠ 9♠', 'J♥'))).toEqual(['Batida de 9:10', 'Escadão:60']);
     expect(calc('A♠ 2♠ 3♠ 4♠ 5♠ 6♠ 7♠ 8♠ 9♠', 'J♥')!.ganhaPartida).toBe(false);

@@ -187,8 +187,9 @@ LENDA
 COMO OS PRÊMIOS CONTAM
 - Prêmios somam. Quando um está dentro do outro (toda Escada também é
   Uma pinta só), vale só o maior.
-- Cada coringa ou Joker usado no lugar de outra carta tira 5 pontos de
-  cada prêmio. Coringa no lugar dele mesmo não conta.
+- Cada coringa usado no lugar de outra carta tira 5 pontos de cada
+  prêmio. Coringa no lugar dele mesmo não conta.
+- O Joker NÃO desconta: ele não é coringa, só vale a carta do coringa.
 
 ROLETA (bônus sorteado a cada rodada pelo app)
 - É um bônus pequeno para movimentar a partida. Não muda com o tamanho

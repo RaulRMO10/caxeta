@@ -5,7 +5,7 @@ import { DOBRAS, DOBRAS_POR_CARTA, Jogo, TRINCAS, TRINCAS_POR_CARTA } from './jo
 // Os coringas e o Joker preenchem as vagas que faltam.
 export interface Arranjo {
   jogos: Jogo[];
-  substitutos: number; // coringas e Jokers usados no lugar de outra carta
+  substitutos: number; // coringas usados no lugar de outra carta (o Joker não conta)
 }
 
 // Como cada vaga foi preenchida, para mostrar na tela.
@@ -41,8 +41,9 @@ function demanda(jogos: Jogo[]) {
   return d;
 }
 
-// Quantos coringas/Jokers ficam no lugar de outra carta (o mínimo possível), ou -1 se não fecha.
-// Coringa no lugar dele mesmo não conta. O Joker sempre conta e só entra no lugar da carta do coringa.
+// Quantos coringas ficam no lugar de outra carta (o mínimo possível), ou -1 se não fecha.
+// Coringa no lugar dele mesmo não conta. O Joker não conta: ele só entra no lugar da carta do
+// coringa, como se fosse ela mesma (não é coringa).
 function substitutosNecessarios(jogos: Jogo[], m: Mao, ctx: Contexto): number {
   const d = demanda(jogos);
   const [jt1, jt2] = ctx.jokerVale;
@@ -51,7 +52,7 @@ function substitutosNecessarios(jogos: Jogo[], m: Mao, ctx: Contexto): number {
   const w1 = m.coringa.get(jt1)!, w2 = m.coringa.get(jt2)!, wv = m.coringa.get(ctx.vira)!;
   const proprioJt = Math.min(Math.min(w1, d1) + Math.min(w2, d2), d1 + d2 - m.jokers);
   const proprioVira = Math.min(wv, d.get(ctx.vira) ?? 0);
-  return m.jokers + m.totalCoringas - proprioJt - proprioVira;
+  return m.totalCoringas - proprioJt - proprioVira;
 }
 
 const chave = (jogos: Jogo[]) => jogos.map(j => j.id).sort((a, b) => a - b).join(',');

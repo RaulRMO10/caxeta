@@ -272,7 +272,7 @@ class Buscador {
 const BUSCA_GERAL = new Buscador(JOGOS.trincas, JOGOS.dobras);
 
 // ---------- Famílias de prêmio ----------
-const JOKER_CONTA = true; // Joker usado num prêmio conta como coringa (desconta)
+const JOKER_CONTA = false; // Joker usado num prêmio não conta como coringa (não desconta)
 
 // Família definida por uma lista fechada de padrões (multiconjuntos de 9 ou 10 cartas).
 class FamiliaPadroes {

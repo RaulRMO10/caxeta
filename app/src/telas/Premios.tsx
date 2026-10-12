@@ -27,7 +27,7 @@ export function TelaPremios({ cfg = CONFIG_PADRAO, jogadores = 4 }: { cfg?: Conf
           <li>A batida vale <b>{cfg.base9}</b> (de 9) ou <b>{cfg.base10}</b> (de 10), mais os prêmios.</li>
           <li>Na batida de 10 o prêmio vale 50% a mais, porque é mais difícil.</li>
           <li>Prêmios somam. Se um está dentro do outro (toda Escada é também Uma pinta só), vale só o maior.</li>
-          <li>Cada coringa ou Joker no lugar de outra carta tira <b>{cfg.desconto}</b> de cada prêmio. Coringa no próprio lugar não conta.</li>
+          <li>Cada coringa no lugar de outra carta tira <b>{cfg.desconto}</b> de cada prêmio. Coringa no próprio lugar e Joker não contam.</li>
           <li>Valores para <b>{jogadores} jogadores</b>{cfg.ajusteMesa && mult !== 1 ? <> (×{mult.toLocaleString('pt-BR')} pelo tamanho da mesa)</> : null}.</li>
         </ul>
       </section>
