@@ -117,7 +117,7 @@ export function Carta({ c, tam = 56, coringa, vale, className = '', style, onCli
         <span className="joker-canto">{letras}</span>
         <span className="joker-centro"><ChapeuJoker tam={tam * (pequena ? 0.7 : 0.6)} /></span>
         {!pequena && <span className="joker-canto baixo">{letras}</span>}
-        {vale != null && <span className="carta-vale">{nomeCarta(vale)}</span>}
+        {vale != null && <span className="carta-vale">vale {nomeCarta(vale)}</span>}
       </Tag>
     );
   }
@@ -159,7 +159,7 @@ export function Carta({ c, tam = 56, coringa, vale, className = '', style, onCli
       {centro}
       {!pequena && <span className="carta-canto baixo">{canto}</span>}
       {coringa && <span className="carta-estrela" aria-label="coringa">★</span>}
-      {vale != null && <span className="carta-vale">{nomeCarta(vale)}</span>}
+      {vale != null && <span className="carta-vale">vale {nomeCarta(vale)}</span>}
     </Tag>
   );
 }
